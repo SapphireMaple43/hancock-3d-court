@@ -40,14 +40,14 @@
   <div class="body">
   <h1>3235 Hancock St — Practice Facility Concept</h1>
   <div class="sub">San Diego, CA · Sports Arena District · ±10,923 SF clear-span · 2019</div>
-  <div class="row"><span class="k">Shell:</span> 109' × ~100' ≈ 10,900 SF</div>
+  <div class="row"><span class="k">Shell:</span> 106' × 106' ≈ 11,236 SF</div>
   <div class="row"><span class="k">Clear ht — ridge:</span> ±30' peak (runs over rims)</div>
   <div class="row"><span class="k">Clear ht — eave:</span> ±22'–25' at side walls</div>
   <div class="row"><span class="k">Court:</span> Regulation NBA 94' × 50'</div>
-  <div class="row"><span class="k">Baseline buffer:</span> ~7.5' each end</div>
-  <div class="row"><span class="k">Sideline buffer:</span> ~25' each side</div>
-  <div class="verdict ok"><b>✔ Fits one full regulation court.</b> Gable ridge runs E–W down the court centerline — <b>max clearance (~30') sits directly over both rims</b>, where ball arc peaks. End run-off ~7.5' (meets FIBA ~2m min); sidelines ~25' are ample.</div>
-  <div class="verdict warn"><b>⚠ Verify before LOI:</b> width back-solved from 10,923 SF ÷ 109' — confirm interior clear L×W; <b>eave height at the side walls</b> (≥~23' keeps run-off usable); 250A power for HVAC + sport lighting. The ~7.5' baselines are tight — no room for end seating/storage. Two side-by-side full courts will <i>not</i> fit (~100' width too narrow).</div>
+  <div class="row"><span class="k">Baseline buffer:</span> ~6' each end</div>
+  <div class="row"><span class="k">Sideline buffer:</span> ~28' each side</div>
+  <div class="verdict ok"><b>✔ Fits one full regulation court.</b> Gable ridge runs E–W down the court centerline — <b>max clearance (~30') sits directly over both rims</b>, where ball arc peaks. Sidelines ~28' are ample.</div>
+  <div class="verdict warn"><b>⚠ Verify before LOI:</b> confirm interior clear dims (106'×106' per update); <b>eave height at the side walls</b> (≥~23' keeps run-off usable); 250A power for HVAC + sport lighting. <b>End run-off is only ~6'</b> — just under the FIBA ~2m (6.6') guideline and tight for an NBA setup; no room for end seating/storage. Two side-by-side full courts will <i>not</i> fit (~106' width too narrow).</div>
   </div>
 </details>
 
@@ -55,7 +55,8 @@
   <b>Legend</b><br>
   Wood floor = regulation court &nbsp;·&nbsp; Blue stripe = key/paint<br>
   Green band = safety run-off &nbsp;·&nbsp; Glass (N) = Hancock St storefront<br>
-  Roll-up doors (S/E) = grade loading &nbsp;·&nbsp; SW box = restrooms
+  Roll-up doors (S/E) = grade loading &nbsp;·&nbsp; SW box = restrooms<br>
+  Center crest = <b>Team Tobias</b>
 </div>
 
 <div id="controls">
@@ -81,8 +82,8 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 // ---- units: 1 unit = 1 foot ----
-const BL = 109;   // building length (E-W)  [per John, 2026-06-08]
-const BW = 100;   // building width (N-S)   [back-solved: 10,923 SF ÷ 109' ≈ 100']
+const BL = 106;   // building length (E-W)  [per John, 2026-06-08]
+const BW = 106;   // building width (N-S)   [per John — square footprint ≈ 11,236 SF]
 const WALL = 24;  // clear height to eave    [flyer ±22-25]
 const PEAK = 30;  // gable peak
 
@@ -166,6 +167,40 @@ rect(0,0,COURT_L,COURT_W);
 // half-court line + center circle
 addLines([[0,-COURT_W/2],[0,COURT_W/2]]);
 arc(0,0,6,0,Math.PI*2,paintMat);
+
+// ===== HALF-COURT CREST — "TEAM TOBIAS" =====
+function makeCrest(){
+  const cv=document.createElement('canvas'); cv.width=cv.height=512;
+  const x=cv.getContext('2d'); const c=256;
+  x.clearRect(0,0,512,512);
+  x.beginPath(); x.arc(c,c,246,0,Math.PI*2); x.fillStyle='#0e2238'; x.fill();      // navy disc
+  x.lineWidth=18; x.strokeStyle='#c9a227'; x.beginPath(); x.arc(c,c,234,0,Math.PI*2); x.stroke(); // gold ring
+  x.lineWidth=4;  x.beginPath(); x.arc(c,c,150,0,Math.PI*2); x.stroke();
+  // arched top wordmark
+  (function arcText(str,radius,size){
+    x.save(); x.translate(c,c); x.fillStyle='#f3e7c4';
+    x.font=`800 ${size}px Inter, Arial, sans-serif`; x.textAlign='center'; x.textBaseline='middle';
+    const step=0.20, start=-(str.length-1)*step/2;
+    for(let i=0;i<str.length;i++){ x.save(); x.rotate(start+i*step); x.translate(0,-radius); x.fillText(str[i],0,0); x.restore(); }
+    x.restore();
+  })('TEAM TOBIAS',182,50);
+  // basketball
+  const by=c-18, r=66;
+  x.beginPath(); x.arc(c,by,r,0,Math.PI*2); x.fillStyle='#e07b1f'; x.fill();
+  x.lineWidth=5; x.strokeStyle='#15140f';
+  x.beginPath(); x.arc(c,by,r,0,Math.PI*2); x.stroke();
+  x.beginPath(); x.moveTo(c-r,by); x.lineTo(c+r,by); x.stroke();
+  x.beginPath(); x.moveTo(c,by-r); x.lineTo(c,by+r); x.stroke();
+  x.beginPath(); x.moveTo(c-46,by-46); x.quadraticCurveTo(c,by,c-46,by+46); x.stroke();
+  x.beginPath(); x.moveTo(c+46,by-46); x.quadraticCurveTo(c,by,c+46,by+46); x.stroke();
+  // straight sub-wordmark
+  x.fillStyle='#f3e7c4'; x.font='800 38px Inter, Arial, sans-serif'; x.textAlign='center'; x.textBaseline='middle';
+  x.fillText('SAN DIEGO', c, c+152);
+  const t=new THREE.CanvasTexture(cv); t.anisotropy=8; return t;
+}
+const crest=new THREE.Mesh(new THREE.CircleGeometry(6.5,64),
+  new THREE.MeshStandardMaterial({map:makeCrest(), transparent:true, roughness:.75, metalness:0}));
+crest.rotation.x=-Math.PI/2; crest.position.set(0,0.452,0); scene.add(crest);
 // each end: x = ±47 baseline
 [-1,1].forEach(s=>{
   const base=s*47;
@@ -337,15 +372,15 @@ dim([49.5,-25],[49.5,25],   0.5, "50'  width", 0xffd873);
 // paint / key
 dim([47,18],[28,18], 0.5, "19' key", 0x9fe0ff);
 // run-off buffers
-dim([47,38],[54.5,38], 0.5, "~7.5' baseline run-off", 0x7fe3a8);
-dim([-38,25],[-38,50], 0.5, "~25' sideline run-off", 0x7fe3a8);
+dim([47,40],[53,40], 0.5, "~6' baseline run-off", 0x7fe3a8);
+dim([-38,25],[-38,53], 0.5, "~28' sideline run-off", 0x7fe3a8);
 // 3-pt callout
 label("3-pt  23'9\"", 30, 2, 6, '#dfe9f5');
 label("rim 4' inside baseline", 40, 2, -14, '#cdd8e6');
 
 // --- building footprint dims (outside the shell, on the lot) ---
-dim([-BL/2,-BW/2-7],[BL/2,-BW/2-7], 0.5, "109' building length  (per update — confirm interior clear)", 0xc9b04a);
-dim([BL/2+7,-BW/2],[BL/2+7,BW/2],   0.5, "~100' width  (back-solved from 10,923 SF)", 0xc9b04a);
+dim([-BL/2,-BW/2-7],[BL/2,-BW/2-7], 0.5, "106' building length  (per update — confirm interior clear)", 0xc9b04a);
+dim([BL/2+7,-BW/2],[BL/2+7,BW/2],   0.5, "106' width  (per update)", 0xc9b04a);
 
 // --- height dimensions (the corrected gable story) ---
 dimV(-BL/2, BW/2, 0, WALL, "eave  ±22'–25'", 0x86d0ff);     // side wall
