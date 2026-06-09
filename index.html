@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>3235 Hancock St — NBA Practice Facility 3D Concept</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d1b2a;overflow:hidden;font-family:Inter,Segoe UI,system-ui,sans-serif;color:#e8eef5;}
+  #c{display:block;width:100%;height:100%;}
+  #panel{position:fixed;top:14px;left:14px;max-width:330px;background:rgba(13,27,42,.86);
+    border:1px solid #2a3f57;border-radius:12px;padding:16px 18px;backdrop-filter:blur(6px);}
+  #panel h1{font-size:15px;margin:0 0 2px;letter-spacing:.3px;}
+  #panel .sub{font-size:11px;color:#8aa2bd;margin-bottom:10px;}
+  #panel .row{font-size:12px;line-height:1.5;color:#c8d6e6;}
+  #panel .k{color:#7fb2ff;}
+  .verdict{margin-top:10px;padding:8px 10px;border-radius:8px;font-size:11.5px;line-height:1.45;}
+  .ok{background:rgba(46,160,67,.16);border:1px solid rgba(46,160,67,.5);}
+  .warn{background:rgba(210,153,34,.16);border:1px solid rgba(210,153,34,.55);}
+  #legend{position:fixed;bottom:14px;left:14px;font-size:11px;color:#8aa2bd;background:rgba(13,27,42,.8);
+    border:1px solid #2a3f57;border-radius:10px;padding:10px 12px;}
+  #legend b{color:#e8eef5;font-weight:600;}
+  #controls{position:fixed;bottom:14px;right:14px;font-size:11px;color:#8aa2bd;background:rgba(13,27,42,.8);
+    border:1px solid #2a3f57;border-radius:10px;padding:10px 12px;text-align:right;}
+  button{margin:3px 0 0 6px;background:#1b3a5b;color:#dce9f7;border:1px solid #2f5a86;border-radius:6px;
+    padding:5px 9px;font-size:11px;cursor:pointer;}
+  button:hover{background:#26527e;}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="panel">
+  <h1>3235 Hancock St — Practice Facility Concept</h1>
+  <div class="sub">San Diego, CA · Sports Arena District · ±10,923 SF clear-span · 2019</div>
+  <div class="row"><span class="k">Shell:</span> 109' × ~100' ≈ 10,900 SF</div>
+  <div class="row"><span class="k">Clear ht — ridge:</span> ±30' peak (runs over rims)</div>
+  <div class="row"><span class="k">Clear ht — eave:</span> ±22'–25' at side walls</div>
+  <div class="row"><span class="k">Court:</span> Regulation NBA 94' × 50'</div>
+  <div class="row"><span class="k">Baseline buffer:</span> ~7.5' each end</div>
+  <div class="row"><span class="k">Sideline buffer:</span> ~25' each side</div>
+  <div class="verdict ok"><b>✔ Fits one full regulation court.</b> Gable ridge runs E–W down the court centerline — <b>max clearance (~30') sits directly over both rims</b>, where ball arc peaks. End run-off ~7.5' (meets FIBA ~2m min); sidelines ~25' are ample.</div>
+  <div class="verdict warn"><b>⚠ Verify before LOI:</b> width back-solved from 10,923 SF ÷ 109' — confirm interior clear L×W; <b>eave height at the side walls</b> (≥~23' keeps run-off usable); 250A power for HVAC + sport lighting. The ~7.5' baselines are tight — no room for end seating/storage. Two side-by-side full courts will <i>not</i> fit (~100' width too narrow).</div>
+</div>
+
+<div id="legend">
+  <b>Legend</b><br>
+  Wood floor = regulation court &nbsp;·&nbsp; Blue stripe = key/paint<br>
+  Green band = safety run-off &nbsp;·&nbsp; Glass (N) = Hancock St storefront<br>
+  Roll-up doors (S/E) = grade loading &nbsp;·&nbsp; SW box = restrooms
+</div>
+
+<div id="controls">
+  Drag = orbit · Scroll = zoom · Right-drag = pan
+  <div>
+    <button onclick="view('iso')">Iso</button>
+    <button onclick="view('top')">Top</button>
+    <button onclick="view('court')">Court</button>
+    <button onclick="toggleRoof()">Roof</button>
+    <button onclick="toggleDims()">Labels</button>
+  </div>
+</div>
+
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+}}
+</script>
+
+<script type="module">
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// ---- units: 1 unit = 1 foot ----
+const BL = 109;   // building length (E-W)  [per John, 2026-06-08]
+const BW = 100;   // building width (N-S)   [back-solved: 10,923 SF ÷ 109' ≈ 100']
+const WALL = 24;  // clear height to eave    [flyer ±22-25]
+const PEAK = 30;  // gable peak
+
+const COURT_L = 94, COURT_W = 50;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0d1b2a);
+scene.fog = new THREE.Fog(0x0d1b2a, 260, 620);
+
+const camera = new THREE.PerspectiveCamera(45, innerWidth/innerHeight, 0.5, 4000);
+const renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'), antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const controls = new OrbitControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.target.set(0, 8, 0);
+
+// ---- lights ----
+scene.add(new THREE.HemisphereLight(0xcfe2ff, 0x20303f, 0.9));
+const sun = new THREE.DirectionalLight(0xfff2d8, 1.15);
+sun.position.set(120, 160, 90);
+sun.castShadow = true;
+sun.shadow.mapSize.set(2048,2048);
+const d=160; sun.shadow.camera.left=-d; sun.shadow.camera.right=d; sun.shadow.camera.top=d; sun.shadow.camera.bottom=-d;
+sun.shadow.camera.far=600;
+scene.add(sun);
+
+// ---- ground / parcel ----
+const lot = new THREE.Mesh(
+  new THREE.PlaneGeometry(260,210),
+  new THREE.MeshStandardMaterial({color:0x2b3645, roughness:1})
+);
+lot.rotation.x = -Math.PI/2; lot.position.y=-0.05; lot.receiveShadow=true;
+scene.add(lot);
+
+// parking strip (east edge)
+const lotMat = new THREE.MeshStandardMaterial({color:0x39434f, roughness:1});
+const park = new THREE.Mesh(new THREE.BoxGeometry(34,0.1,BW), lotMat);
+park.position.set(BL/2+22, 0.02, 0); park.receiveShadow=true; scene.add(park);
+for(let i=0;i<6;i++){
+  const line=new THREE.Mesh(new THREE.BoxGeometry(30,0.06,0.5),
+    new THREE.MeshStandardMaterial({color:0xc9b04a}));
+  line.position.set(BL/2+22,0.08,-BW/2+8+i*14); scene.add(line);
+}
+
+// ===== FLOOR SLAB =====
+const slab = new THREE.Mesh(new THREE.BoxGeometry(BL,0.4,BW),
+  new THREE.MeshStandardMaterial({color:0x6f7a86, roughness:.95}));
+slab.position.y=0.2; slab.receiveShadow=true; scene.add(slab);
+
+// safety run-off band (green)
+const runoff = new THREE.Mesh(new THREE.PlaneGeometry(BL-3, BW-3),
+  new THREE.MeshStandardMaterial({color:0x1e5b3a, roughness:1}));
+runoff.rotation.x=-Math.PI/2; runoff.position.y=0.42; scene.add(runoff);
+
+// ===== WOOD COURT =====
+const wood = new THREE.Mesh(new THREE.PlaneGeometry(COURT_L, COURT_W),
+  new THREE.MeshStandardMaterial({color:0xc8915a, roughness:.6, metalness:.05}));
+wood.rotation.x=-Math.PI/2; wood.position.y=0.44; wood.receiveShadow=true; scene.add(wood);
+
+// ---- court line drawing (on Y plane) ----
+const lineMat = new THREE.LineBasicMaterial({color:0xffffff});
+const paintMat = new THREE.LineBasicMaterial({color:0x2f7fd6});
+const Y=0.46;
+function addLines(pts, mat){
+  const g=new THREE.BufferGeometry().setFromPoints(pts.map(p=>new THREE.Vector3(p[0],Y,p[1])));
+  scene.add(new THREE.Line(g, mat||lineMat));
+}
+function rect(cx,cz,w,h,mat){
+  addLines([[cx-w/2,cz-h/2],[cx+w/2,cz-h/2],[cx+w/2,cz+h/2],[cx-w/2,cz+h/2],[cx-w/2,cz-h/2]],mat);
+}
+function arc(cx,cz,r,a0,a1,mat,seg=48){
+  const p=[]; for(let i=0;i<=seg;i++){const a=a0+(a1-a0)*i/seg; p.push([cx+r*Math.cos(a), cz+r*Math.sin(a)]);}
+  addLines(p,mat);
+}
+// boundary
+rect(0,0,COURT_L,COURT_W);
+// half-court line + center circle
+addLines([[0,-COURT_W/2],[0,COURT_W/2]]);
+arc(0,0,6,0,Math.PI*2,paintMat);
+// each end: x = ±47 baseline
+[-1,1].forEach(s=>{
+  const base=s*47;
+  const lane=base - s*19;               // foul line 19' from baseline
+  // key / paint 16' wide
+  rect((base+lane)/2,0,Math.abs(base-lane),16, paintMat);
+  // free throw circle
+  arc(lane,0,6,0,Math.PI*2,paintMat);
+  // three-point: corners 22' straight to 14' from baseline, arc 23'9"
+  const r=23.75, corner=22;
+  const x14 = base - s*14;
+  addLines([[base, s*corner*0+ -corner],[x14,-corner]]); // bottom straight
+  addLines([[base, corner],[x14,corner]]);               // top straight
+  const ang=Math.acos(corner/r);
+  arc(base - s*4, 0, r, /*from*/ s>0? Math.PI-ang: -ang, /*to*/ s>0? Math.PI+ang: ang, lineMat, 40);
+  // hoop + backboard 4' inside baseline
+  const hx=base - s*4;
+  const back=new THREE.Mesh(new THREE.BoxGeometry(0.4,3.5,6),
+    new THREE.MeshStandardMaterial({color:0xffffff,transparent:true,opacity:.55}));
+  back.position.set(hx,10,0); scene.add(back);
+  const rim=new THREE.Mesh(new THREE.TorusGeometry(0.75,0.08,8,24),
+    new THREE.MeshStandardMaterial({color:0xff6a00}));
+  rim.rotation.x=Math.PI/2; rim.position.set(hx - s*0.9,10,0); scene.add(rim);
+  const post=new THREE.Mesh(new THREE.CylinderGeometry(0.4,0.4,13),
+    new THREE.MeshStandardMaterial({color:0x444c55}));
+  post.position.set(base+ s*2,6.5,0); scene.add(post);
+});
+
+// ===== BUILDING SHELL =====
+const shell = new THREE.Group();
+const steelMat = new THREE.MeshStandardMaterial({color:0x9fb0c0, roughness:.7, metalness:.35,
+  transparent:true, opacity:.20, side:THREE.DoubleSide});
+const trimMat  = new THREE.MeshStandardMaterial({color:0x5d6b79, roughness:.6, metalness:.4});
+
+function wallPanel(w,h,x,y,z,ry){
+  const m=new THREE.Mesh(new THREE.PlaneGeometry(w,h), steelMat);
+  m.position.set(x,y,z); if(ry) m.rotation.y=ry; m.castShadow=true; shell.add(m);
+}
+// 4 walls
+wallPanel(BL,WALL, 0,WALL/2,-BW/2,0);          // south
+wallPanel(BL,WALL, 0,WALL/2, BW/2,0);          // north (Hancock)
+wallPanel(BW,WALL, -BL/2,WALL/2,0,Math.PI/2);  // west (Greenwood)
+wallPanel(BW,WALL,  BL/2,WALL/2,0,Math.PI/2);  // east
+
+// corner posts / eave beams for structure read
+function beam(w,h,d,x,y,z){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),trimMat);m.position.set(x,y,z);m.castShadow=true;shell.add(m);}
+[[-BL/2,-BW/2],[BL/2,-BW/2],[-BL/2,BW/2],[BL/2,BW/2]].forEach(c=>beam(0.8,WALL,0.8,c[0],WALL/2,c[1]));
+beam(BL,0.8,0.8,0,WALL,-BW/2); beam(BL,0.8,0.8,0,WALL,BW/2);
+beam(0.8,0.8,BW,-BL/2,WALL,0); beam(0.8,0.8,BW,BL/2,WALL,0);
+
+// gable roof (two slopes meeting at a ridge running E-W down the center).
+// Built from explicit corner vertices so the peak is always UP at z=0.
+const roof = new THREE.Group();
+const roofMat = new THREE.MeshStandardMaterial({color:0x8493a3, roughness:.8, metalness:.3,
+  side:THREE.DoubleSide, transparent:true, opacity:.85});
+function quad(a,b,c,d,mat){
+  const g=new THREE.BufferGeometry();
+  const v=new Float32Array([...a,...b,...c, ...a,...c,...d]);
+  g.setAttribute('position',new THREE.BufferAttribute(v,3));
+  g.computeVertexNormals();
+  const m=new THREE.Mesh(g,mat); m.castShadow=true; return m;
+}
+// ridge corners (high, at z=0, y=PEAK) ; eave corners (low, at z=±BW/2, y=WALL)
+const RN=[ -BL/2, PEAK, 0], RP=[ BL/2, PEAK, 0];
+roof.add(quad(RN, RP, [ BL/2,WALL, BW/2], [-BL/2,WALL, BW/2], roofMat)); // south slope (+z), peak->eave
+roof.add(quad(RN, RP, [ BL/2,WALL,-BW/2], [-BL/2,WALL,-BW/2], roofMat)); // north slope (-z)
+// gable end triangles (so the high-bay reads as enclosed)
+function tri(a,b,c,mat){const g=new THREE.BufferGeometry();
+  g.setAttribute('position',new THREE.BufferAttribute(new Float32Array([...a,...b,...c]),3));
+  g.computeVertexNormals(); return new THREE.Mesh(g,mat);}
+[-1,1].forEach(s=>{
+  roof.add(tri([s*BL/2,WALL,-BW/2],[s*BL/2,WALL,BW/2],[s*BL/2,PEAK,0], steelMat));
+});
+// ridge beam
+const ridge=new THREE.Mesh(new THREE.BoxGeometry(BL,0.7,0.7),trimMat);
+ridge.position.set(0,PEAK,0); roof.add(ridge);
+// exposed rafters / tie beams (high-bay steel read) — drawn as line segments eave->ridge->eave
+const rafterMat=new THREE.LineBasicMaterial({color:0x55636f});
+for(let i=-2;i<=2;i++){
+  const x=i*BL/5;
+  const pts=[ new THREE.Vector3(x,WALL,-BW/2), new THREE.Vector3(x,PEAK,0),
+             new THREE.Vector3(x,WALL, BW/2) ];
+  roof.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(pts), rafterMat));
+  // horizontal tie at eave level
+  roof.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+    [new THREE.Vector3(x,WALL,-BW/2), new THREE.Vector3(x,WALL,BW/2)]), rafterMat));
+}
+shell.add(roof);
+scene.add(shell);
+
+// ===== FEATURES =====
+// glass storefront entry — Hancock (north) side
+const glass=new THREE.Mesh(new THREE.PlaneGeometry(26,12),
+  new THREE.MeshStandardMaterial({color:0x6fc0ff, metalness:.4, roughness:.1, transparent:true, opacity:.45}));
+glass.position.set(-BL/2+30,6,BW/2+0.1); scene.add(glass);
+const entryBox=new THREE.Mesh(new THREE.BoxGeometry(28,13,6),
+  new THREE.MeshStandardMaterial({color:0x3a4654, roughness:.8}));
+entryBox.position.set(-BL/2+30,6.5,BW/2+3); entryBox.castShadow=true; scene.add(entryBox);
+
+// 2 grade-level roll-up doors (south wall)
+[-1,1].forEach((s,i)=>{
+  const door=new THREE.Mesh(new THREE.PlaneGeometry(16,16),
+    new THREE.MeshStandardMaterial({color:0x40505f, roughness:.9}));
+  door.position.set(s*22,8,-BW/2-0.1); door.rotation.y=Math.PI; scene.add(door);
+});
+
+// restrooms — SW corner block
+const rr=new THREE.Mesh(new THREE.BoxGeometry(18,10,16),
+  new THREE.MeshStandardMaterial({color:0xb9c4d0, roughness:.9}));
+rr.position.set(-BL/2+9,5.2,-BW/2+8); rr.castShadow=true; scene.add(rr);
+
+// human scale figures (6')
+const figMat=new THREE.MeshStandardMaterial({color:0x1b2a3a});
+[[0,0],[20,10],[-30,-12],[40,-15],[-44,14]].forEach(p=>{
+  const f=new THREE.Mesh(new THREE.CapsuleGeometry(0.9,4,4,8),figMat);
+  f.position.set(p[0],3,p[1]); f.castShadow=true; scene.add(f);
+});
+
+// ===== DIMENSION NOTATIONS =====
+const dimGroup = new THREE.Group(); scene.add(dimGroup);
+function makeLabel(text, color){
+  const pad=8, fs=44;
+  const cv=document.createElement('canvas');
+  const ctx=cv.getContext('2d');
+  ctx.font=`600 ${fs}px Inter, Segoe UI, sans-serif`;
+  const w=ctx.measureText(text).width;
+  cv.width=w+pad*2; cv.height=fs+pad*2;
+  ctx.font=`600 ${fs}px Inter, Segoe UI, sans-serif`;
+  ctx.fillStyle='rgba(10,20,32,.82)';
+  if(ctx.roundRect){ctx.beginPath();ctx.roundRect(0,0,cv.width,cv.height,12);ctx.fill();}
+  else ctx.fillRect(0,0,cv.width,cv.height);
+  ctx.fillStyle=color||'#eaf2fb';
+  ctx.textBaseline='middle'; ctx.fillText(text,pad,cv.height/2);
+  const tex=new THREE.CanvasTexture(cv); tex.anisotropy=8;
+  const spr=new THREE.Sprite(new THREE.SpriteMaterial({map:tex, depthTest:false, transparent:true}));
+  const s=0.045; spr.scale.set(cv.width*s, cv.height*s, 1);
+  return spr;
+}
+function label(text,x,y,z,color){const s=makeLabel(text,color); s.position.set(x,y,z); s.renderOrder=999; dimGroup.add(s); return s;}
+
+// dimension line with end ticks, drawn flat on the floor (y given)
+function dim(p1,p2,y,text,color){
+  const a=new THREE.Vector3(p1[0],y,p1[1]), b=new THREE.Vector3(p2[0],y,p2[1]);
+  const mat=new THREE.LineBasicMaterial({color:color||0xffd873});
+  dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),mat));
+  // perpendicular ticks
+  const dir=new THREE.Vector3().subVectors(b,a).normalize();
+  const perp=new THREE.Vector3(-dir.z,0,dir.x).multiplyScalar(1.6);
+  [a,b].forEach(p=>{
+    dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+      [p.clone().add(perp),p.clone().sub(perp)]),mat));
+  });
+  const mid=new THREE.Vector3().addVectors(a,b).multiplyScalar(.5);
+  label(text, mid.x, y+2.5, mid.z, '#ffe6a3');
+}
+// vertical dimension (height), drawn in X-Y at given z
+function dimV(x,z,y0,y1,text,color){
+  const mat=new THREE.LineBasicMaterial({color:color||0x86d0ff});
+  const a=new THREE.Vector3(x,y0,z), b=new THREE.Vector3(x,y1,z);
+  dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([a,b]),mat));
+  [a,b].forEach(p=>dimGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+    [p.clone().add(new THREE.Vector3(2,0,0)),p.clone().add(new THREE.Vector3(-2,0,0))]),mat)));
+  label(text, x, (y0+y1)/2, z, '#bfe6ff');
+}
+
+// --- court dimensions (drawn just outside the lines, on the green band) ---
+dim([-47,-29.5],[47,-29.5], 0.5, "94'  regulation court length", 0xffd873);
+dim([49.5,-25],[49.5,25],   0.5, "50'  width", 0xffd873);
+// paint / key
+dim([47,18],[28,18], 0.5, "19' key", 0x9fe0ff);
+// run-off buffers
+dim([47,38],[54.5,38], 0.5, "~7.5' baseline run-off", 0x7fe3a8);
+dim([-38,25],[-38,50], 0.5, "~25' sideline run-off", 0x7fe3a8);
+// 3-pt callout
+label("3-pt  23'9\"", 30, 2, 6, '#dfe9f5');
+label("rim 4' inside baseline", 40, 2, -14, '#cdd8e6');
+
+// --- building footprint dims (outside the shell, on the lot) ---
+dim([-BL/2,-BW/2-7],[BL/2,-BW/2-7], 0.5, "109' building length  (per update — confirm interior clear)", 0xc9b04a);
+dim([BL/2+7,-BW/2],[BL/2+7,BW/2],   0.5, "~100' width  (back-solved from 10,923 SF)", 0xc9b04a);
+
+// --- height dimensions (the corrected gable story) ---
+dimV(-BL/2, BW/2, 0, WALL, "eave  ±22'–25'", 0x86d0ff);     // side wall
+dimV(0, 0, 0, PEAK, "ridge  ±30'  (peak over rims)", 0x86d0ff); // center, over court
+label("▲ highest at center — runs E–W over both rims", 0, PEAK+4, 0, '#bfe6ff');
+label("lower at side walls (beyond sidelines)", -BL/2+18, WALL+3, BW/2, '#9fb6cc');
+
+// orientation tags
+label("HANCOCK ST  (N) — storefront", -BL/2+30, 16, BW/2+10, '#cfe0f2');
+label("GREENWOOD ST (W)", -BL/2-12, 10, 0, '#cfe0f2');
+label("grade loading (S)", 0, 18, -BW/2-9, '#cfe0f2');
+label("parking + loading (E)", BL/2+22, 8, 0, '#cfe0f2');
+label("restrooms", -BL/2+9, 12, -BW/2+8, '#cfe0f2');
+
+// ---- views ----
+const cam={
+  iso:[150,120,150], top:[0,250,0.1], court:[0,30,95]
+};
+function view(k){const v=cam[k]; camera.position.set(...v); controls.target.set(0, k==='top'?0:8, 0);}
+window.view=view;
+let roofOn=true;
+window.toggleRoof=()=>{roofOn=!roofOn; roof.visible=roofOn;};
+let dimsOn=true;
+window.toggleDims=()=>{dimsOn=!dimsOn; dimGroup.visible=dimsOn;};
+view('iso');
+
+addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+(function loop(){requestAnimationFrame(loop); controls.update(); renderer.render(scene,camera);})();
+</script>
+</body>
+</html>
