@@ -7,8 +7,14 @@
 <style>
   html,body{margin:0;height:100%;background:#0d1b2a;overflow:hidden;font-family:Inter,Segoe UI,system-ui,sans-serif;color:#e8eef5;}
   #c{display:block;width:100%;height:100%;}
-  #panel{position:fixed;top:14px;left:14px;max-width:330px;background:rgba(13,27,42,.86);
-    border:1px solid #2a3f57;border-radius:12px;padding:16px 18px;backdrop-filter:blur(6px);}
+  #panel{position:fixed;top:14px;left:14px;max-width:330px;background:rgba(13,27,42,.92);
+    border:1px solid #2a3f57;border-radius:12px;backdrop-filter:blur(6px);overflow:hidden;}
+  #panel>summary{cursor:pointer;list-style:none;padding:11px 15px;font-size:13px;font-weight:600;
+    color:#cfe0f2;user-select:none;display:flex;align-items:center;gap:8px;white-space:nowrap;}
+  #panel>summary::-webkit-details-marker{display:none;}
+  #panel>summary::after{content:"▸";margin-left:auto;color:#7fb2ff;transition:transform .2s;}
+  #panel[open]>summary::after{transform:rotate(90deg);}
+  #panel .body{padding:2px 18px 16px;max-width:330px;max-height:78vh;overflow-y:auto;}
   #panel h1{font-size:15px;margin:0 0 2px;letter-spacing:.3px;}
   #panel .sub{font-size:11px;color:#8aa2bd;margin-bottom:10px;}
   #panel .row{font-size:12px;line-height:1.5;color:#c8d6e6;}
@@ -29,7 +35,9 @@
 <body>
 <canvas id="c"></canvas>
 
-<div id="panel">
+<details id="panel">
+  <summary>📋 Specs &amp; feasibility</summary>
+  <div class="body">
   <h1>3235 Hancock St — Practice Facility Concept</h1>
   <div class="sub">San Diego, CA · Sports Arena District · ±10,923 SF clear-span · 2019</div>
   <div class="row"><span class="k">Shell:</span> 109' × ~100' ≈ 10,900 SF</div>
@@ -40,7 +48,8 @@
   <div class="row"><span class="k">Sideline buffer:</span> ~25' each side</div>
   <div class="verdict ok"><b>✔ Fits one full regulation court.</b> Gable ridge runs E–W down the court centerline — <b>max clearance (~30') sits directly over both rims</b>, where ball arc peaks. End run-off ~7.5' (meets FIBA ~2m min); sidelines ~25' are ample.</div>
   <div class="verdict warn"><b>⚠ Verify before LOI:</b> width back-solved from 10,923 SF ÷ 109' — confirm interior clear L×W; <b>eave height at the side walls</b> (≥~23' keeps run-off usable); 250A power for HVAC + sport lighting. The ~7.5' baselines are tight — no room for end seating/storage. Two side-by-side full courts will <i>not</i> fit (~100' width too narrow).</div>
-</div>
+  </div>
+</details>
 
 <div id="legend">
   <b>Legend</b><br>
