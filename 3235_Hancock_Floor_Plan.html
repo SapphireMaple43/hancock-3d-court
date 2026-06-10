@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Team Tobias — 3235 Hancock St · Concept Floor Plan</title>
+<style>
+  :root{ --ink:#1d3a5f; --gold:#b5872a; --navy:#2a4d74; --paper:#f7f8fa; }
+  html,body{margin:0;background:var(--paper);font-family:Inter,Segoe UI,system-ui,sans-serif;color:var(--ink);}
+  header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:2px solid var(--ink);background:#fff;}
+  header .crest{width:44px;height:44px;border-radius:50%;background:#0e2238;border:3px solid #c9a227;
+    color:#c9a227;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;}
+  header h1{font-size:17px;margin:0;letter-spacing:.3px;}
+  header .sub{font-size:12px;color:#5b718c;}
+  header .right{margin-left:auto;display:flex;gap:8px;}
+  .btn{font-size:12px;text-decoration:none;color:var(--ink);border:1px solid var(--ink);border-radius:8px;
+    padding:7px 12px;background:#fff;cursor:pointer;font-family:inherit;}
+  .btn:hover{background:#eef2f7;}
+  main{max-width:1180px;margin:0 auto;padding:14px;}
+  svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #d4dce6;border-radius:10px;}
+  .foot{font-size:11px;color:#5b718c;text-align:center;padding:10px 0 26px;}
+  @media print{
+    header .right{display:none;} svg{border:none;} body{background:#fff;}
+    @page{size:landscape;margin:8mm;}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="crest">TT</div>
+  <div>
+    <h1>Team Tobias Training Facility — Concept Floor Plan</h1>
+    <div class="sub">3235 Hancock Street, San Diego, CA 92110 · Sports Arena District · Schematic — not for construction</div>
+  </div>
+  <div class="right">
+    <button class="btn" onclick="history.back()">← Back to 3D model</button>
+    <button class="btn" onclick="window.print()">🖨 Print / PDF</button>
+  </div>
+</header>
+
+<main>
+<svg viewBox="0 0 1560 2010" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Segoe UI, sans-serif">
+  <defs>
+    <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto-start-reverse">
+      <path d="M0,0L9,4L0,8z" fill="#b5872a"/>
+    </marker>
+    <path id="crestArc" d="M 645,652 A 42 42 0 0 1 729,652" fill="none"/>
+    <pattern id="hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill="#dde4ec"/>
+      <line x1="0" y1="0" x2="0" y2="8" stroke="#5b718c" stroke-width="2"/>
+    </pattern>
+  </defs>
+
+  <!-- ======== streets ======== -->
+  <text x="687" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3">HANCOCK STREET (N)</text>
+  <line x1="180" y1="112" x2="1200" y2="112" stroke="#9fb0c2" stroke-width="2" stroke-dasharray="14 8"/>
+  <text x="120" y="647" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3" transform="rotate(-90 120 647)">GREENWOOD STREET (W)</text>
+  <line x1="138" y1="170" x2="138" y2="1124" stroke="#9fb0c2" stroke-width="2" stroke-dasharray="14 8"/>
+
+  <!-- north arrow -->
+  <g transform="translate(1330,84)">
+    <circle r="26" fill="#fff" stroke="#1d3a5f" stroke-width="2"/>
+    <path d="M0,-18 L8,12 L0,6 L-8,12 Z" fill="#1d3a5f"/>
+    <text y="-32" text-anchor="middle" font-size="14" font-weight="800" fill="#1d3a5f">N</text>
+  </g>
+
+  <!-- ======== building shell ======== -->
+  <rect x="204" y="164" width="966" height="966" fill="#1d3a5f"/>
+  <rect x="210" y="170" width="954" height="954" fill="#eaf4ec"/>
+
+  <!-- ======== court ======== -->
+  <!-- wood apron (2' border) -->
+  <rect x="282" y="404" width="810" height="486" fill="#f0d9b8" stroke="#d9bd92" stroke-width="1"/>
+  <!-- playing court 86 x 50 -->
+  <rect x="300" y="422" width="774" height="450" fill="#e8c89a" stroke="#1d3a5f" stroke-width="3"/>
+  <!-- midline -->
+  <line x1="687" y1="422" x2="687" y2="872" stroke="#1d3a5f" stroke-width="2.5"/>
+
+  <!-- keys -->
+  <rect x="300" y="575" width="171" height="144" fill="#2a4d74" fill-opacity=".88" stroke="#1d3a5f" stroke-width="2.5"/>
+  <circle cx="471" cy="647" r="54" fill="none" stroke="#1d3a5f" stroke-width="2.5"/>
+  <rect x="903" y="575" width="171" height="144" fill="#2a4d74" fill-opacity=".88" stroke="#1d3a5f" stroke-width="2.5"/>
+  <circle cx="903" cy="647" r="54" fill="none" stroke="#1d3a5f" stroke-width="2.5"/>
+
+  <!-- 3-pt lines -->
+  <line x1="300" y1="449" x2="427.8" y2="449" stroke="#1d3a5f" stroke-width="2.5"/>
+  <line x1="300" y1="845" x2="427.8" y2="845" stroke="#1d3a5f" stroke-width="2.5"/>
+  <path d="M 427.8,449 A 213.75 213.75 0 0 1 427.8,845" fill="none" stroke="#1d3a5f" stroke-width="2.5"/>
+  <line x1="1074" y1="449" x2="946.2" y2="449" stroke="#1d3a5f" stroke-width="2.5"/>
+  <line x1="1074" y1="845" x2="946.2" y2="845" stroke="#1d3a5f" stroke-width="2.5"/>
+  <path d="M 946.2,449 A 213.75 213.75 0 0 0 946.2,845" fill="none" stroke="#1d3a5f" stroke-width="2.5"/>
+
+  <!-- center crest -->
+  <circle cx="687" cy="647" r="58" fill="#0e2238"/>
+  <circle cx="687" cy="647" r="52" fill="none" stroke="#c9a227" stroke-width="4"/>
+  <text font-size="11" font-weight="800" fill="#c9a227" letter-spacing="2">
+    <textPath href="#crestArc" startOffset="50%" text-anchor="middle">TEAM TOBIAS</textPath>
+  </text>
+  <text x="687" y="660" text-anchor="middle" font-size="30" font-weight="800" fill="#c9a227">TT</text>
+  <text x="687" y="684" text-anchor="middle" font-size="9" font-weight="700" fill="#f3e7c4" letter-spacing="1.5">SAN DIEGO</text>
+
+  <!-- 94' regulation comparison (dashed) -->
+  <rect x="264" y="422" width="846" height="450" fill="none" stroke="#c2602e" stroke-width="2" stroke-dasharray="10 7"/>
+  <text x="687" y="412" text-anchor="middle" font-size="12.5" font-weight="600" fill="#c2602e">94' regulation alternative (dashed) — requires wall-mounted goal system</text>
+
+  <!-- ======== goal units (Spalding Renegade, short boom) ======== -->
+  <!-- left -->
+  <g>
+    <rect x="216" y="627" width="58.5" height="40" fill="#2a4d74" stroke="#1d3a5f" stroke-width="2"/>
+    <rect x="262" y="638" width="14" height="18" fill="#1d3a5f"/>
+    <line x1="276" y1="647" x2="336" y2="647" stroke="#1d3a5f" stroke-width="4"/>
+    <line x1="336" y1="620" x2="336" y2="674" stroke="#1d3a5f" stroke-width="5"/>
+    <circle cx="347.25" cy="647" r="6" fill="#e07b1f" stroke="#1d3a5f" stroke-width="1.5"/>
+  </g>
+  <!-- right -->
+  <g>
+    <rect x="1099.5" y="627" width="58.5" height="40" fill="#2a4d74" stroke="#1d3a5f" stroke-width="2"/>
+    <rect x="1098" y="638" width="14" height="18" fill="#1d3a5f"/>
+    <line x1="1098" y1="647" x2="1038" y2="647" stroke="#1d3a5f" stroke-width="4"/>
+    <line x1="1038" y1="620" x2="1038" y2="674" stroke="#1d3a5f" stroke-width="5"/>
+    <circle cx="1026.75" cy="647" r="6" fill="#e07b1f" stroke="#1d3a5f" stroke-width="1.5"/>
+  </g>
+  <text x="247" y="700" text-anchor="middle" font-size="11" fill="#2a4d74" font-weight="600">Renegade</text>
+  <text x="247" y="714" text-anchor="middle" font-size="11" fill="#2a4d74" font-weight="600">SD180sb</text>
+  <text x="1128" y="700" text-anchor="middle" font-size="11" fill="#2a4d74" font-weight="600">Renegade</text>
+  <text x="1128" y="714" text-anchor="middle" font-size="11" fill="#2a4d74" font-weight="600">SD180sb</text>
+
+  <!-- wall pads E/W -->
+  <rect x="210" y="512" width="6" height="270" fill="#2a4d74"/>
+  <rect x="1158" y="512" width="6" height="270" fill="#2a4d74"/>
+
+  <!-- ======== restrooms SW ======== -->
+  <rect x="216" y="974" width="162" height="144" fill="#dde4ec" stroke="#1d3a5f" stroke-width="2"/>
+  <line x1="297" y1="974" x2="297" y2="1118" stroke="#1d3a5f" stroke-width="1.5"/>
+  <rect x="238" y="996" width="26" height="18" fill="none" stroke="#5b718c" stroke-width="1.5"/>
+  <rect x="318" y="996" width="26" height="18" fill="none" stroke="#5b718c" stroke-width="1.5"/>
+  <text x="297" y="1062" text-anchor="middle" font-size="12" font-weight="600" fill="#1d3a5f">RESTROOMS</text>
+  <text x="297" y="1078" text-anchor="middle" font-size="10.5" fill="#5b718c">18' × 16' (per flyer)</text>
+
+  <!-- ======== storefront entry (N) ======== -->
+  <line x1="363" y1="167" x2="597" y2="167" stroke="#7db3e8" stroke-width="9"/>
+  <rect x="453" y="161" width="54" height="12" fill="#fff"/>
+  <path d="M 453,170 A 54 54 0 0 1 507,224" fill="none" stroke="#5b718c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="354" y="132" width="252" height="30" fill="none" stroke="#5b718c" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="480" y="152" text-anchor="middle" font-size="10.5" fill="#5b718c">entry canopy</text>
+  <text x="480" y="206" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1d3a5f">GLASS STOREFRONT ENTRY — 26'</text>
+
+  <!-- ======== roll-up doors (S) ======== -->
+  <rect x="417" y="1118" width="144" height="12" fill="#fff" stroke="#1d3a5f" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <rect x="813" y="1118" width="144" height="12" fill="#fff" stroke="#1d3a5f" stroke-width="1.5" stroke-dasharray="8 5"/>
+  <text x="489" y="1108" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1d3a5f">16' GRADE DOOR</text>
+  <text x="885" y="1108" text-anchor="middle" font-size="11.5" font-weight="600" fill="#1d3a5f">16' GRADE DOOR</text>
+
+  <!-- ======== parking (E) ======== -->
+  <g stroke="#9fb0c2" stroke-width="2">
+    <line x1="1164" y1="230" x2="1326" y2="230"/><line x1="1164" y1="311" x2="1326" y2="311"/>
+    <line x1="1164" y1="392" x2="1326" y2="392"/><line x1="1164" y1="473" x2="1326" y2="473"/>
+    <line x1="1164" y1="554" x2="1326" y2="554"/><line x1="1164" y1="635" x2="1326" y2="635"/>
+    <line x1="1164" y1="716" x2="1326" y2="716"/><line x1="1164" y1="797" x2="1326" y2="797"/>
+    <line x1="1164" y1="878" x2="1326" y2="878"/><line x1="1164" y1="959" x2="1326" y2="959"/>
+    <line x1="1164" y1="1040" x2="1326" y2="1040"/><line x1="1164" y1="1121" x2="1326" y2="1121"/>
+  </g>
+  <text x="1245" y="660" text-anchor="middle" font-size="13" font-weight="600" fill="#5b718c" transform="rotate(-90 1245 660)">PARKING — 11 STALLS + GRADE LOADING</text>
+  <text x="1400" y="660" text-anchor="middle" font-size="11" fill="#9fb0c2" transform="rotate(-90 1400 660)">drive aisle</text>
+
+  <!-- ======== dimensions ======== -->
+  <g stroke="#b5872a" stroke-width="1.5" fill="none">
+    <line x1="210" y1="170" x2="210" y2="142"/><line x1="1164" y1="170" x2="1164" y2="142"/>
+    <line x1="210" y1="148" x2="1164" y2="148" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="210" y1="170" x2="182" y2="170"/><line x1="210" y1="1124" x2="182" y2="1124"/>
+    <line x1="188" y1="170" x2="188" y2="1124" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="300" y1="915" x2="1074" y2="915" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="640" y1="422" x2="640" y2="872" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="210" y1="398" x2="300" y2="398" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="1074" y1="398" x2="1164" y2="398" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="760" y1="170" x2="760" y2="422" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="300" y1="552" x2="471" y2="552" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <line x1="1164" y1="206" x2="1326" y2="206" marker-start="url(#ar)" marker-end="url(#ar)"/>
+  </g>
+  <g font-size="13" font-weight="700" fill="#b5872a">
+    <text x="687" y="140" text-anchor="middle">106'-0" (assumed interior — verify)</text>
+    <text x="176" y="647" text-anchor="middle" transform="rotate(-90 176 647)">106'-0"</text>
+    <text x="687" y="936" text-anchor="middle">86'-0" COURT</text>
+    <text x="628" y="652" text-anchor="middle" transform="rotate(-90 628 652)">50'-0"</text>
+    <text x="255" y="390" text-anchor="middle" font-size="12">10'-0"*</text>
+    <text x="1119" y="390" text-anchor="middle" font-size="12">10'-0"*</text>
+    <text x="748" y="300" text-anchor="middle" transform="rotate(-90 748 300)" font-size="12">28'-0"</text>
+    <text x="385" y="544" text-anchor="middle" font-size="12">19' key</text>
+    <text x="1245" y="198" text-anchor="middle" font-size="11.5">18' stalls</text>
+  </g>
+  <text x="687" y="960" text-anchor="middle" font-size="11.5" fill="#c2602e" font-weight="600">* vendor requires 10'-6" baseline-to-wall for short-boom Renegade — plan provides 10'-0" (≈6" short per end; confirm interior or run 85' court)</text>
+
+  <!-- scale bar -->
+  <g transform="translate(210,1146)">
+    <rect x="0" y="0" width="90" height="8" fill="#1d3a5f"/>
+    <rect x="90" y="0" width="90" height="8" fill="#fff" stroke="#1d3a5f"/>
+    <rect x="180" y="0" width="180" height="8" fill="#1d3a5f"/>
+    <text x="0" y="24" font-size="11" fill="#1d3a5f">0</text>
+    <text x="90" y="24" font-size="11" fill="#1d3a5f" text-anchor="middle">10'</text>
+    <text x="180" y="24" font-size="11" fill="#1d3a5f" text-anchor="middle">20'</text>
+    <text x="360" y="24" font-size="11" fill="#1d3a5f" text-anchor="middle">40'</text>
+  </g>
+
+  <!-- ======== notes ======== -->
+  <g font-size="12.5" fill="#1d3a5f">
+    <text x="210" y="1208" font-weight="800" font-size="14" letter-spacing="1">GENERAL NOTES</text>
+    <text x="210" y="1232">1. Schematic concept only — not for construction. Interior assumed 106' × 106' (≈11,236 SF); field-verify clear dimensions.</text>
+    <text x="210" y="1254">2. Court 86' × 50' per Spalding short-boom Renegade plan — SD180sb portable goals, 42"×72" glass, breakaway rim (full NBA spec).</text>
+    <text x="210" y="1276">3. Vendor precedent: Jimmy Butler (San Diego) and Kawhi Leonard (San Diego) private courts both run sub-regulation length —</text>
+    <text x="210" y="1294">&#160;&#160;&#160;&#160;impact ≈ two strides at midcourt (per vendor text, 6/10/2026).</text>
+    <text x="210" y="1316">4. Full 94' regulation (dashed) requires wall-mounted goal system; structural backup beams to be confirmed.</text>
+    <text x="210" y="1338">5. Ridge ±30' runs E–W over court centerline (directly over both rims); eave ±22'–25' at side walls — verify ≥23' over run-offs.</text>
+    <text x="210" y="1360">6. Power 250A / 3-phase per flyer ("lessee to confirm") — verify for HVAC + sport lighting load.</text>
+    <text x="210" y="1382">7. Restrooms SW per Voit flyer; storefront entry on Hancock; two 16' grade doors south; 11 stalls east (TPA — no parking minimum).</text>
+    <text x="210" y="1404">8. Sources: Voit marketing flyer · Spalding SD180sb spec sheet · vendor correspondence 6/10/2026.</text>
+  </g>
+
+  <!-- ======== title block ======== -->
+  <g>
+    <rect x="1190" y="1190" width="340" height="220" fill="#fff" stroke="#1d3a5f" stroke-width="2.5"/>
+    <line x1="1190" y1="1246" x2="1530" y2="1246" stroke="#1d3a5f" stroke-width="1.5"/>
+    <line x1="1190" y1="1330" x2="1530" y2="1330" stroke="#1d3a5f" stroke-width="1.5"/>
+    <circle cx="1228" cy="1218" r="18" fill="#0e2238"/>
+    <circle cx="1228" cy="1218" r="15" fill="none" stroke="#c9a227" stroke-width="2"/>
+    <text x="1228" y="1224" text-anchor="middle" font-size="13" font-weight="800" fill="#c9a227">TT</text>
+    <text x="1258" y="1213" font-size="14" font-weight="800" fill="#1d3a5f">TEAM TOBIAS</text>
+    <text x="1258" y="1231" font-size="11" fill="#5b718c">TRAINING FACILITY</text>
+    <text x="1206" y="1270" font-size="12.5" font-weight="700" fill="#1d3a5f">3235 Hancock Street</text>
+    <text x="1206" y="1288" font-size="12" fill="#1d3a5f">San Diego, CA 92110</text>
+    <text x="1206" y="1312" font-size="12" font-weight="700" fill="#b5872a">CONCEPT FLOOR PLAN — SCHEMATIC</text>
+    <text x="1206" y="1354" font-size="11.5" fill="#1d3a5f">Prepared by JPG Advisors LLC</text>
+    <text x="1206" y="1372" font-size="11.5" fill="#1d3a5f">June 10, 2026</text>
+    <text x="1206" y="1396" font-size="10.5" fill="#5b718c">Not for construction · all dims subject to field verification</text>
+  </g>
+
+  <!-- ======================================================= -->
+  <!-- SPALDING SHORT-BOOM CLEARANCE DETAIL & FIT CHECK        -->
+  <!-- ======================================================= -->
+  <rect x="210" y="1450" width="1320" height="520" fill="#fff" stroke="#1d3a5f" stroke-width="2.5"/>
+  <text x="230" y="1486" font-size="15" font-weight="800" fill="#1d3a5f" letter-spacing="1">SPALDING RENEGADE SD180sb (SHORT-BOOM) — CLEARANCE DETAIL &amp; FIT CHECK</text>
+  <text x="230" y="1506" font-size="11.5" fill="#5b718c">Side elevation at each baseline · per vendor correspondence 6/10/2026 + Spalding spec sheet (standard unit 158-5/16")</text>
+
+  <!-- ===== side elevation (16 px = 1 ft) ===== -->
+  <g>
+    <!-- end wall -->
+    <rect x="246" y="1560" width="14" height="280" fill="url(#hatch)" stroke="#1d3a5f" stroke-width="1.5"/>
+    <text x="232" y="1700" text-anchor="middle" font-size="11" font-weight="600" fill="#5b718c" transform="rotate(-90 232 1700)">END WALL</text>
+    <!-- floor -->
+    <line x1="246" y1="1840" x2="820" y2="1840" stroke="#1d3a5f" stroke-width="4"/>
+    <!-- baseline -->
+    <line x1="428" y1="1606" x2="428" y2="1848" stroke="#c2602e" stroke-width="2" stroke-dasharray="8 5"/>
+    <text x="428" y="1596" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c2602e">BASELINE</text>
+    <text x="740" y="1826" font-size="12" font-weight="700" fill="#1d3a5f">COURT →</text>
+    <!-- goal unit -->
+    <rect x="262" y="1803" width="104" height="37" fill="#2a4d74" stroke="#1d3a5f" stroke-width="2"/>
+    <rect x="262" y="1806" width="104" height="6" fill="#c9a227"/>
+    <rect x="262" y="1788" width="58" height="15" fill="#1d3a5f"/>
+    <rect x="352" y="1728" width="12" height="75" fill="#1d3a5f"/>
+    <line x1="358" y1="1732" x2="492" y2="1638" stroke="#1d3a5f" stroke-width="6"/>
+    <line x1="358" y1="1768" x2="492" y2="1690" stroke="#1d3a5f" stroke-width="3.5"/>
+    <rect x="489" y="1632" width="6" height="56" fill="#7db3e8" stroke="#1d3a5f" stroke-width="2"/>
+    <line x1="495" y1="1680" x2="517" y2="1680" stroke="#e07b1f" stroke-width="5"/>
+    <path d="M 497,1682 L 503,1700 L 513,1700 L 515,1682" fill="none" stroke="#9fb0c2" stroke-width="1.5"/>
+    <text x="314" y="1782" text-anchor="middle" font-size="10.5" font-weight="600" fill="#2a4d74">portable base</text>
+    <!-- extension lines -->
+    <g stroke="#9fb0c2" stroke-width="1">
+      <line x1="260" y1="1844" x2="260" y2="1878"/>
+      <line x1="428" y1="1848" x2="428" y2="1934"/>
+      <line x1="492" y1="1690" x2="492" y2="1906"/>
+      <line x1="517" y1="1684" x2="517" y2="1934"/>
+    </g>
+    <!-- dims -->
+    <g stroke="#b5872a" stroke-width="1.5" fill="none">
+      <line x1="260" y1="1872" x2="428" y2="1872" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="428" y1="1900" x2="492" y2="1900" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="428" y1="1928" x2="517" y2="1928" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="556" y1="1680" x2="556" y2="1840" marker-start="url(#ar)" marker-end="url(#ar)"/>
+      <line x1="548" y1="1680" x2="520" y2="1680" stroke="#9fb0c2" stroke-width="1"/>
+    </g>
+    <text x="344" y="1864" text-anchor="middle" font-size="12.5" font-weight="800" fill="#c2602e">10'-6" REQUIRED</text>
+    <text x="460" y="1892" text-anchor="middle" font-size="11" font-weight="700" fill="#b5872a">4'-0" board</text>
+    <text x="472" y="1947" text-anchor="middle" font-size="11" font-weight="700" fill="#b5872a">5'-3" rim ℄</text>
+    <text x="568" y="1764" text-anchor="middle" font-size="11" font-weight="700" fill="#b5872a" transform="rotate(-90 568 1764)">10'-0" rim (NBA)</text>
+  </g>
+
+  <!-- ===== fit check table ===== -->
+  <g font-size="13" fill="#1d3a5f">
+    <text x="870" y="1545" font-weight="800" font-size="14" letter-spacing="1">FIT CHECK — ASSUMED 106'-0" INTERIOR</text>
+    <text x="870" y="1576">Court length (vendor plan)</text><text x="1500" y="1576" text-anchor="end" font-weight="700">86'-0"</text>
+    <text x="870" y="1602">Goal zones required (each end)</text><text x="1500" y="1602" text-anchor="end" font-weight="700">2 × 10'-6" = 21'-0"</text>
+    <line x1="870" y1="1614" x2="1500" y2="1614" stroke="#9fb0c2" stroke-width="1"/>
+    <text x="870" y="1636" font-weight="700">Total required</text><text x="1500" y="1636" text-anchor="end" font-weight="800">107'-0"</text>
+    <text x="870" y="1662">Interior available (assumed)</text><text x="1500" y="1662" text-anchor="end" font-weight="700">106'-0"</text>
+    <rect x="862" y="1672" width="646" height="26" fill="#fdf2dc" stroke="#c2602e" stroke-width="1.5"/>
+    <text x="870" y="1690" font-weight="800" fill="#c2602e">SHORTFALL</text><text x="1500" y="1690" text-anchor="end" font-weight="800" fill="#c2602e">1'-0" (≈6" per end)</text>
+
+    <text x="870" y="1732" font-weight="800" font-size="14" letter-spacing="1">HOW IT WORKS — THREE PATHS</text>
+    <text x="870" y="1760" font-weight="700">A.</text><text x="894" y="1760">Run an <tspan font-weight="800">85'-0" court</tspan> (106' − 21'): fits exactly. Vendor: Butler &amp;</text>
+    <text x="894" y="1778">Leonard (SD) courts already run short — cost ≈ one stride at midcourt.</text>
+    <text x="870" y="1804" font-weight="700">B.</text><text x="894" y="1804"><tspan font-weight="800">Field-verify interior clear:</tspan> if true clear ≥ 107'-0", the 86' court</text>
+    <text x="894" y="1822">works exactly as drawn on this plan.</text>
+    <text x="870" y="1848" font-weight="700">C.</text><text x="894" y="1848">Ask Spalding for a <tspan font-weight="800">10'-0" boom config:</tspan> 86' court fits a 106' interior</text>
+    <text x="894" y="1866">to the inch (confirm engineering with vendor).</text>
+
+    <rect x="862" y="1884" width="646" height="48" fill="#e9f5ec" stroke="#2e8b57" stroke-width="1.5"/>
+    <text x="874" y="1903" font-size="12" font-weight="800" fill="#226644">VERDICT: Works at 85'–86' pending verified interior. Every path keeps full NBA</text>
+    <text x="874" y="1921" font-size="12" font-weight="700" fill="#226644">hardware — SD180sb breakaway rim · 42"×72" glass · 10'-0" rim · NBA key &amp; 3-pt.</text>
+    <text x="870" y="1954" font-size="10.5" fill="#5b718c">Standard Renegade unit is 158-5/16" (~13'-2") wall-to-board; the short-boom build compresses this to the 10'-6" baseline zone shown.</text>
+  </g>
+</svg>
+</main>
+
+<div class="foot">Companion to the interactive 3D model — open <b>3235_Hancock_3D_Model.html</b> (or the GitHub Pages link) and tap “🗺 2D Plan”.</div>
+</body>
+</html>
