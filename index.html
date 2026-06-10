@@ -4,9 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Team Tobias — 3235 Hancock St 3D Concept</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{ --navy:#0e2238; --panel:rgba(10,22,36,.92); --line:#27425e; --ink:#e8eef5; --dim:#8aa2bd; --gold:#c9a227; --blue:#7fb2ff; }
-  html,body{margin:0;height:100%;background:#0b1726;overflow:hidden;font-family:Inter,Segoe UI,system-ui,sans-serif;color:var(--ink);}
+  html,body{margin:0;height:100%;background:#0b1726;overflow:hidden;font-family:Barlow,'Segoe UI',system-ui,sans-serif;color:var(--ink);}
+  #panel h1,#panel>summary,#mode,#loadtxt,.btn.gold{font-family:Oswald,'Arial Narrow',sans-serif;letter-spacing:.7px;}
   #c{display:block;width:100%;height:100%;}
 
   #load{position:fixed;inset:0;background:#0b1726;display:flex;flex-direction:column;gap:14px;align-items:center;justify-content:center;z-index:50;transition:opacity .6s;}
@@ -71,15 +75,15 @@
   <h1>3235 Hancock St — Team Tobias Practice Facility</h1>
   <div class="sub">San Diego, CA · Sports Arena District · clear-span steel · 2019</div>
   <div class="row"><span class="k">Shell:</span> 106' × 106' ≈ 11,236 SF (per update)</div>
-  <div class="row"><span class="k">Clear ht — ridge:</span> ±30' peak, runs E–W over both rims</div>
-  <div class="row"><span class="k">Clear ht — eave:</span> ±22'–25' at side walls</div>
+  <div class="row"><span class="k">Clear ht — ridge:</span> ±25' at center, runs E–W over both rims</div>
+  <div class="row"><span class="k">Clear ht — eave:</span> ±22' at side walls (flyer: ±22'–25')</div>
   <div class="row"><span class="k">Court plan:</span> <b>86' × 50'</b> — shortened per vendor</div>
   <div class="row"><span class="k">Goals:</span> Spalding Renegade SD180sb, short boom — 10'6" from baseline; 42"×72" glass, breakaway rim — <b>full NBA spec</b></div>
   <div class="row"><span class="k">Sideline run-off:</span> ~28' each side</div>
 
-  <div class="verdict ok"><b>✔ The 86' plan works.</b> Rim height, backboard, key, 3-pt geometry all regulation — only midcourt is compressed (~2 strides, per vendor). Precedent: Jimmy Butler's and Kawhi Leonard's San Diego private courts both run sub-regulation. Ridge clearance (~30') sits directly over both rims.</div>
+  <div class="verdict ok"><b>✔ The 86' plan works.</b> Rim height, backboard, key, 3-pt geometry all regulation — only midcourt is compressed (~2 strides, per vendor). Precedent: Jimmy Butler's and Kawhi Leonard's San Diego private courts both run sub-regulation. Max clearance (~25' ridge) sits directly over both rims.</div>
 
-  <div class="verdict warn"><b>⚠ Verify before LOI:</b> 86' court + 2 × 10'6" goal zones = <b>107' — about 1' over the 106' interior</b> (6" pinch per end). Confirm exact interior clear with broker/vendor, or drop to an 85' court. Also: eave height ≥~23' over run-offs; 250A power for HVAC + sport lighting.</div>
+  <div class="verdict warn"><b>⚠ Verify before LOI:</b> 86' court + 2 × 10'6" goal zones = <b>107' — about 1' over the 106' interior</b> (6" pinch per end). Confirm exact interior clear with broker/vendor, or drop to an 85' court. Also: roof slopes 22'→25', putting <b>≈23'6" over the court sidelines vs the ≥24' fact-sheet target</b> — measure at the steel; 250A power for HVAC + sport lighting.</div>
 
   <div class="verdict note"><b>ℹ Full 94' regulation</b> (toggle below) only fits with a <b>wall-mounted goal system</b> — portable Renegades need 10'6" behind each baseline that a 94' layout doesn't leave. Wall-mount needs structural backup beams (per Tobias). Use the <b>Compare 94'</b> button to eyeball the tradeoff.</div>
   </div>
@@ -103,6 +107,7 @@
   <button class="btn" id="bTop" onclick="view('top')">⬇ Top</button>
   <button class="btn" onclick="toggleRoof()">🏠 Roof</button>
   <button class="btn" onclick="toggleDims()">📐 Labels</button>
+  <button class="btn" onclick="toggleCtx()">🏙 Context</button>
   <button class="btn gold" id="bCmp" onclick="toggleCourt()">⇄ Compare 94'</button>
   <a class="btn gold" href="3235_Hancock_Floor_Plan.html">🗺 2D Plan</a>
 </div>
@@ -119,9 +124,21 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
+// load brand fonts before canvas textures draw (2.5s cap, falls back gracefully)
+try{
+  await Promise.race([
+    Promise.all([
+      document.fonts.load('700 50px Oswald'),
+      document.fonts.load('600 44px Oswald'),
+      document.fonts.load('600 42px Barlow')
+    ]),
+    new Promise(r=>setTimeout(r,2500))
+  ]);
+}catch(e){}
+
 // ================= constants (1 unit = 1 ft) =================
 const BL = 106, BW = 106;      // shell interior (per John)
-const WALL = 24, PEAK = 30;    // eave / ridge
+const WALL = 22, PEAK = 25;    // eave / ridge — flyer "±22'–25'", peak at center per John
 const COURT_W = 50;
 const GOAL_ZONE = 10.5;        // Spalding short-boom Renegade: 10'6" from baseline
 let courtLen = 86;             // 86 = Renegade plan | 94 = regulation (wall-mount)
@@ -217,7 +234,7 @@ const asphTex = canvasTex(256,256,(g)=>{            // asphalt
 },9,7);
 
 // ================= ground / parking =================
-const lot = new THREE.Mesh(new THREE.PlaneGeometry(320,260),
+const lot = new THREE.Mesh(new THREE.PlaneGeometry(480,420),
   new THREE.MeshStandardMaterial({map:asphTex, roughness:.98}));
 lot.rotation.x=-Math.PI/2; lot.position.y=-0.05; lot.receiveShadow=true; scene.add(lot);
 
@@ -231,6 +248,166 @@ for(let i=0;i<=11;i++){
   line.position.set(BL/2+14, 0.09, -BW/2+4+i*9);
   if(-BW/2+4+i*9 < BW/2-3) scene.add(line);
 }
+
+// ================= context: streets & neighbors (textured from aerial refs) =================
+const ctxGroup = new THREE.Group(); scene.add(ctxGroup);
+(function(){
+  // --- textures matched to the Google aerials ---
+  const rustRoof = canvasTex(256,256,(g)=>{        // weathered red-brown corrugated + skylights
+    g.fillStyle='#8a4a34'; g.fillRect(0,0,256,256);
+    for(let y=0;y<256;y+=8){ g.fillStyle='rgba(58,26,14,.35)'; g.fillRect(0,y,256,2); }
+    for(let i=0;i<280;i++){ g.fillStyle=`rgba(${150+Math.random()*60|0},${75+Math.random()*30|0},42,${Math.random()*.3})`;
+      g.fillRect(Math.random()*256,Math.random()*256,4+Math.random()*9,2); }
+    g.fillStyle='rgba(228,228,218,.85)';
+    for(let x=22;x<256;x+=58){ g.fillRect(x,14,12,228); }
+    g.fillStyle='rgba(255,255,255,.5)'; g.fillRect(0,124,256,5);   // ridge cap
+  },3,2);
+  const tpoRoof = canvasTex(256,256,(g)=>{          // white TPO, seam grid, weathering
+    g.fillStyle='#d9dcdf'; g.fillRect(0,0,256,256);
+    g.strokeStyle='rgba(148,153,158,.65)'; g.lineWidth=1.5;
+    for(let x=0;x<=256;x+=42){ g.beginPath(); g.moveTo(x,0); g.lineTo(x,256); g.stroke(); }
+    for(let i=0;i<320;i++){ g.fillStyle=`rgba(118,123,128,${Math.random()*.14})`;
+      g.fillRect(Math.random()*256,Math.random()*256,4,3); }
+    g.fillStyle='rgba(255,255,255,.9)';
+    for(let x=30;x<256;x+=86){ g.fillRect(x,32,16,192); }
+  },2,2);
+  function wallTexN(base, opening){                  // neighbor walls: panel ribs, doors, grime
+    return canvasTex(512,128,(g)=>{
+      g.fillStyle=base; g.fillRect(0,0,512,128);
+      g.strokeStyle='rgba(0,0,0,.13)';
+      for(let x=0;x<512;x+=26){ g.beginPath(); g.moveTo(x,0); g.lineTo(x,128); g.stroke(); }
+      g.fillStyle=opening;
+      g.fillRect(58,50,48,78); g.fillRect(248,58,42,70); g.fillRect(398,38,62,90);
+      g.fillStyle='rgba(64,56,46,.28)'; g.fillRect(0,110,512,18);
+      for(let i=0;i<170;i++){ g.fillStyle=`rgba(88,84,78,${Math.random()*.13})`;
+        g.fillRect(Math.random()*512,Math.random()*128,5,3); }
+    },1,1);
+  }
+  const roadTex = canvasTex(512,128,(g)=>{           // faded asphalt, patches, tar seams
+    g.fillStyle='#383d44'; g.fillRect(0,0,512,128);
+    for(let i=0;i<1000;i++){ const v=44+Math.random()*32|0;
+      g.fillStyle=`rgba(${v},${v+3},${v+7},.4)`; g.fillRect(Math.random()*512,Math.random()*128,2,2); }
+    for(let i=0;i<9;i++){ g.fillStyle='rgba(22,24,28,.5)';
+      g.fillRect(Math.random()*460,Math.random()*100,34+Math.random()*46,12+Math.random()*18); }
+    g.strokeStyle='rgba(16,18,21,.6)'; g.lineWidth=2;
+    for(let i=0;i<6;i++){ const x=Math.random()*512;
+      g.beginPath(); g.moveTo(x,0); g.quadraticCurveTo(x+22,64,x-12,128); g.stroke(); }
+  },4,1);
+  const roadMat=new THREE.MeshStandardMaterial({map:roadTex, roughness:.97});
+  const walkTex=concTex.clone(); walkTex.repeat.set(46,1); walkTex.needsUpdate=true;
+  const walkMat=new THREE.MeshStandardMaterial({map:walkTex, roughness:.95});
+  const gravel = canvasTex(256,256,(g)=>{            // dirt/gravel lot across Hancock
+    g.fillStyle='#84785f'; g.fillRect(0,0,256,256);
+    for(let i=0;i<2200;i++){ const v=110+Math.random()*70|0;
+      g.fillStyle=`rgba(${v},${v-12},${v-34},.5)`; g.fillRect(Math.random()*256,Math.random()*256,2.5,2); }
+    for(let i=0;i<14;i++){ g.fillStyle='rgba(70,62,46,.35)';
+      g.fillRect(Math.random()*220,Math.random()*220,18+Math.random()*36,10+Math.random()*20); }
+  },3,1);
+
+  function box(w,h,dp,x,y,z,mat,cs){
+    const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,dp),mat);
+    m.position.set(x,y,z); if(cs){m.castShadow=true;} m.receiveShadow=true;
+    ctxGroup.add(m); return m;
+  }
+
+  // --- streets ---
+  box(460,0.08,9, 0,0.01, 62, walkMat);                       // Hancock sidewalk
+  box(460,0.1,26, 0,0.02, 80, roadMat);                       // Hancock St
+  box(9,0.08,300, -62,0.01,-10, walkMat);                     // Greenwood sidewalk
+  box(26,0.1,300, -80,0.02,-10, roadMat);                     // Greenwood St
+  const fadedLine=new THREE.MeshStandardMaterial({color:0x9da2a8, roughness:.9});
+  for(let x=-220;x<220;x+=30) box(9,0.12,0.55, x,0.09, 80, fadedLine);
+  for(let z=-150;z<110;z+=30) box(0.55,0.12,9, -80,0.09, z, fadedLine);
+  box(34,0.12,0.9, -52,0.1, 57.6, new THREE.MeshStandardMaterial({color:0x9c3a30, roughness:.85})); // red curb at corner
+  // STOP pavement marking (Greenwood approach)
+  (function(){
+    const cv=document.createElement('canvas'); cv.width=128; cv.height=256;
+    const g=cv.getContext('2d'); g.clearRect(0,0,128,256);
+    g.fillStyle='rgba(235,238,240,.85)'; g.font='700 92px Oswald, Arial Narrow, sans-serif';
+    g.textAlign='center'; g.save(); g.translate(64,128); g.rotate(Math.PI/2);
+    g.fillText('STOP',0,30); g.restore();
+    const t=new THREE.CanvasTexture(cv); t.colorSpace=THREE.SRGBColorSpace;
+    const m=new THREE.Mesh(new THREE.PlaneGeometry(7,14),
+      new THREE.MeshStandardMaterial({map:t, transparent:true, roughness:.9}));
+    m.rotation.x=-Math.PI/2; m.position.set(-80,0.14,44); ctxGroup.add(m);
+  })();
+  // gravel/dirt lot across Hancock (NW, with the rust-roof warehouse behind)
+  box(130,0.06,28, -60,0.012, 99, new THREE.MeshStandardMaterial({map:gravel, roughness:1}));
+
+  // --- neighboring buildings (massing + materials from aerials) ---
+  [[120,18,40, -60,128, '#cfc8b8','#5a5248', rustRoof, 3],     // NW: tan walls, rust corrugated roof
+   [70,14,34,  95,118, '#b9bdc2','#54585d', tpoRoof, 1],       // NE
+   [42,16,70, -112,12, '#c5c9cd','#565a5f', tpoRoof, 2],       // W across Greenwood
+   [38,12,42, -112,-66, '#b8b2a4','#544e44', rustRoof, 0],     // SW: rust roof
+   [150,20,62, 12,-98, '#d8dbde','#5b5f64', tpoRoof, 4],       // S: big white warehouse
+   [52,16,82, 120,-24, '#c0c4c8','#55595e', tpoRoof, 2]        // E beyond parking
+  ].forEach(([w,h,dp,x,z,cb,co,rt,ac])=>{
+    const wt=wallTexN(cb,co); wt.repeat.set(Math.max(2,w/26),1); wt.needsUpdate=true;
+    box(w,h,dp, x,h/2, z, new THREE.MeshStandardMaterial({map:wt, roughness:.85}), true);
+    const rtc=rt.clone(); rtc.repeat.set(Math.max(1,w/40),Math.max(1,dp/40)); rtc.needsUpdate=true;
+    box(w+1,0.6,dp+1, x,h+0.3, z, new THREE.MeshStandardMaterial({map:rtc, roughness:.9}));
+    for(let i=0;i<ac;i++)                                       // rooftop HVAC units
+      box(4,2,3, x-w/3+i*(w/Math.max(ac,1))*0.7, h+1.6, z+(i%2?6:-6),
+        new THREE.MeshStandardMaterial({color:0xaeb3b8, roughness:.7, metalness:.3}), true);
+  });
+
+  // --- parked cars ---
+  const carCols=[0xd8dadc,0x96999d,0x3a3f46,0x7a3b34,0xcfd2d5];
+  function car(x,z,ry,c){
+    const g2=new THREE.Group();
+    const body=new THREE.Mesh(new THREE.BoxGeometry(7,1.5,2.9),
+      new THREE.MeshStandardMaterial({color:c, roughness:.35, metalness:.5}));
+    body.position.y=1.1; body.castShadow=true; g2.add(body);
+    const cab=new THREE.Mesh(new THREE.BoxGeometry(3.8,1.1,2.7),
+      new THREE.MeshStandardMaterial({color:0x1d2228, roughness:.2, metalness:.4}));
+    cab.position.set(-0.3,2.2,0); g2.add(cab);
+    [[-2.4,1],[2.4,1],[-2.4,-1],[2.4,-1]].forEach(p=>{
+      const wh=new THREE.Mesh(new THREE.CylinderGeometry(0.55,0.55,0.4,12),
+        new THREE.MeshStandardMaterial({color:0x15171a, roughness:.8}));
+      wh.rotation.x=Math.PI/2; wh.position.set(p[0],0.55,p[1]*1.55); g2.add(wh);
+    });
+    g2.position.set(x,0,z); g2.rotation.y=ry; ctxGroup.add(g2);
+  }
+  car(-150,72.5,0,carCols[0]); car(-98,72.5,0,carCols[2]); car(46,72.5,0,carCols[1]);
+  car(142,72.5,0,carCols[3]); car(-72.5,-44,Math.PI/2,carCols[4]); car(-72.5,-96,Math.PI/2,carCols[1]);
+  car(76,-14,0,carCols[0]); car(76,13,0,carCols[2]);          // two in the east stalls
+
+  // --- telephone poles + sagging wires along Hancock ---
+  const poleMat=new THREE.MeshStandardMaterial({color:0x6b5a44, roughness:.95});
+  const wireMat=new THREE.LineBasicMaterial({color:0x2b2f34});
+  const poleXs=[-185,-95,-5,85,175];
+  poleXs.forEach(x=>{
+    const p=new THREE.Mesh(new THREE.CylinderGeometry(0.32,0.4,28,8), poleMat);
+    p.position.set(x,14,66.5); p.castShadow=true; ctxGroup.add(p);
+    const arm=new THREE.Mesh(new THREE.BoxGeometry(0.35,0.35,6), poleMat);
+    arm.position.set(x,25.6,66.5); ctxGroup.add(arm);
+  });
+  for(let i=0;i<poleXs.length-1;i++){
+    [64.2,68.8].forEach(zw=>{
+      const a=new THREE.Vector3(poleXs[i],25.5,zw), b=new THREE.Vector3(poleXs[i+1],25.5,zw);
+      const mid=a.clone().lerp(b,0.5); mid.y-=1.6;
+      const curve=new THREE.QuadraticBezierCurve3(a,mid,b);
+      ctxGroup.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(curve.getPoints(16)), wireMat));
+    });
+  }
+
+  // --- yard clutter between 3235 and the south warehouse (per aerial) ---
+  for(let i=0;i<7;i++){
+    box(2.5+Math.random()*3.5, 1.5+Math.random()*2.5, 2+Math.random()*3,
+      -26+i*9+Math.random()*4, 1.2, -60-Math.random()*5,
+      new THREE.MeshStandardMaterial({color:[0x8a7a5c,0x9a8a6a,0x73685a,0x5e6a72][i%4], roughness:.9}), true);
+  }
+
+  // --- street trees (per streetview: along Hancock frontage) ---
+  const trunk=new THREE.MeshStandardMaterial({color:0x5d4a33, roughness:.9});
+  const leaf=new THREE.MeshStandardMaterial({color:0x3e6b46, roughness:.9});
+  [[-44,58],[-2,58],[34,58],[-62,34],[-62,-30]].forEach(([x,z])=>{
+    const t=new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.45,7),trunk);
+    t.position.set(x,3.5,z); t.castShadow=true; ctxGroup.add(t);
+    const f=new THREE.Mesh(new THREE.SphereGeometry(3.1,12,10),leaf);
+    f.position.set(x,8.6,z); f.castShadow=true; ctxGroup.add(f);
+  });
+})();
 
 // ================= building =================
 const bldg = new THREE.Group(); scene.add(bldg);
@@ -332,7 +509,7 @@ canopy.position.set(-23,13,BW/2+3); canopy.castShadow=true; bldg.add(canopy);
   const g=cv.getContext('2d');
   g.fillStyle='#0e2238'; g.fillRect(0,0,1024,170);
   g.strokeStyle='#c9a227'; g.lineWidth=6; g.strokeRect(8,8,1008,154);
-  g.fillStyle='#f3e7c4'; g.font='800 88px Inter, Arial, sans-serif';
+  g.fillStyle='#f3e7c4'; g.font='700 88px Oswald, Arial Narrow, sans-serif';
   g.textAlign='center'; g.textBaseline='middle';
   g.fillText('TEAM TOBIAS', 512, 88);
   const t=new THREE.CanvasTexture(cv); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8;
@@ -374,18 +551,18 @@ const padMat=new THREE.MeshStandardMaterial({color:0x14324e, roughness:.8});
   const g=cv.getContext('2d');
   g.fillStyle='#0e2238'; g.fillRect(0,0,1024,240);
   g.strokeStyle='#c9a227'; g.lineWidth=8; g.strokeRect(10,10,1004,220);
-  g.fillStyle='#f3e7c4'; g.font='800 92px Inter, Arial, sans-serif';
+  g.fillStyle='#f3e7c4'; g.font='700 92px Oswald, Arial Narrow, sans-serif';
   g.textAlign='center'; g.textBaseline='middle';
   g.fillText('TEAM TOBIAS', 512, 100);
-  g.font='600 44px Inter, Arial, sans-serif'; g.fillStyle='#c9a227';
+  g.font='600 44px Oswald, Arial Narrow, sans-serif'; g.fillStyle='#c9a227';
   g.fillText('SAN DIEGO', 512, 178);
   const t=new THREE.CanvasTexture(cv); t.colorSpace=THREE.SRGBColorSpace; t.anisotropy=8;
   const ban=new THREE.Mesh(new THREE.PlaneGeometry(22,5.2),
     new THREE.MeshStandardMaterial({map:t, side:THREE.DoubleSide, roughness:.7}));
-  ban.position.set(0,23.5,0); scene.add(ban);
+  ban.position.set(0,19.8,0); scene.add(ban);
   const cableMat=new THREE.LineBasicMaterial({color:0x6a7884});
   [-9,9].forEach(x=>scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(
-    [new THREE.Vector3(x,PEAK,0), new THREE.Vector3(x,26.1,0)]), cableMat)));
+    [new THREE.Vector3(x,PEAK,0), new THREE.Vector3(x,22.4,0)]), cableMat)));
 })();
 
 // figures + ball
@@ -406,10 +583,10 @@ function makeLabel(text, color){
   const pad=10, fs=42;
   const cv=document.createElement('canvas');
   const ctx=cv.getContext('2d');
-  ctx.font=`600 ${fs}px Inter, Segoe UI, sans-serif`;
+  ctx.font=`600 ${fs}px Barlow, Segoe UI, sans-serif`;
   const w=ctx.measureText(text).width;
   cv.width=w+pad*2; cv.height=fs+pad*2;
-  ctx.font=`600 ${fs}px Inter, Segoe UI, sans-serif`;
+  ctx.font=`600 ${fs}px Barlow, Segoe UI, sans-serif`;
   ctx.fillStyle='rgba(8,18,30,.85)';
   ctx.beginPath();
   if(ctx.roundRect) ctx.roundRect(0,0,cv.width,cv.height,14); else ctx.rect(0,0,cv.width,cv.height);
@@ -450,8 +627,8 @@ function dimV(x,z,y0,y1,text){
 // static dims
 dim([-BL/2,-BW/2-8],[BL/2,-BW/2-8], 0.5, "106' building (confirm interior clear)", 0xc9b04a);
 dim([BL/2+8,-BW/2],[BL/2+8,BW/2],   0.5, "106'", 0xc9b04a);
-dimV(-44, BW/2, 0, WALL, "eave ±22'–25'");
-dimV(-12, 0, 0, PEAK, "ridge ±30' — over rims");
+dimV(-44, BW/2, 0, WALL, "eave ±22'");
+dimV(-12, 0, 0, PEAK, "ridge ±25' — over rims");
 label("HANCOCK ST (N) — entry", -23, 20.5, BW/2+8, '#cfe0f2');
 label("GREENWOOD ST (W)", -BL/2-12, 10, 0, '#cfe0f2');
 label("grade doors (S)", 0, 18, -BW/2-8, '#cfe0f2');
@@ -467,7 +644,7 @@ function crestCanvas(){
   x.beginPath(); x.arc(c,c,234,0,Math.PI*2); x.stroke();
   x.lineWidth=4; x.beginPath(); x.arc(c,c,150,0,Math.PI*2); x.stroke();
   x.save(); x.translate(c,c); x.fillStyle='#f3e7c4';
-  x.font='800 50px Inter, Arial, sans-serif'; x.textAlign='center'; x.textBaseline='middle';
+  x.font='700 50px Oswald, Arial Narrow, sans-serif'; x.textAlign='center'; x.textBaseline='middle';
   const str='TEAM TOBIAS', step=0.20, start=-(str.length-1)*step/2;
   for(let i=0;i<str.length;i++){ x.save(); x.rotate(start+i*step); x.translate(0,-182); x.fillText(str[i],0,0); x.restore(); }
   x.restore();
@@ -479,7 +656,7 @@ function crestCanvas(){
   x.beginPath(); x.moveTo(c,by-r); x.lineTo(c,by+r); x.stroke();
   x.beginPath(); x.moveTo(c-46,by-46); x.quadraticCurveTo(c,by,c-46,by+46); x.stroke();
   x.beginPath(); x.moveTo(c+46,by-46); x.quadraticCurveTo(c,by,c+46,by+46); x.stroke();
-  x.fillStyle='#f3e7c4'; x.font='800 38px Inter, Arial, sans-serif';
+  x.fillStyle='#f3e7c4'; x.font='700 38px Oswald, Arial Narrow, sans-serif';
   x.textAlign='center'; x.textBaseline='middle';
   x.fillText('SAN DIEGO', c, c+152);
   return cv;
@@ -673,6 +850,8 @@ let roofOn=true;
 window.toggleRoof=()=>{roofOn=!roofOn; roof.visible=roofOn;};
 let dimsOn=true;
 window.toggleDims=()=>{dimsOn=!dimsOn; dimGroup.visible=dimsOn;};
+let ctxOn=true;
+window.toggleCtx=()=>{ctxOn=!ctxOn; ctxGroup.visible=ctxOn;};
 window.toggleCourt=()=>{
   courtLen = courtLen===86 ? 94 : 86;
   buildCourt(courtLen);

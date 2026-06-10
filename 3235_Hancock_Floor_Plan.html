@@ -4,9 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Team Tobias — 3235 Hancock St · Concept Floor Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{ --ink:#1d3a5f; --gold:#b5872a; --navy:#2a4d74; --paper:#f7f8fa; }
-  html,body{margin:0;background:var(--paper);font-family:Inter,Segoe UI,system-ui,sans-serif;color:var(--ink);}
+  html,body{margin:0;background:var(--paper);font-family:Barlow,'Segoe UI',system-ui,sans-serif;color:var(--ink);}
+  header h1,header .crest{font-family:Oswald,'Arial Narrow',sans-serif;letter-spacing:.5px;}
   header{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:2px solid var(--ink);background:#fff;}
   header .crest{width:44px;height:44px;border-radius:50%;background:#0e2238;border:3px solid #c9a227;
     color:#c9a227;font-weight:800;display:flex;align-items:center;justify-content:center;font-size:17px;}
@@ -20,8 +24,13 @@
   svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #d4dce6;border-radius:10px;}
   .foot{font-size:11px;color:#5b718c;text-align:center;padding:10px 0 26px;}
   @media print{
-    header .right{display:none;} svg{border:none;} body{background:#fff;}
-    @page{size:landscape;margin:8mm;}
+    body{background:#fff;margin:0;}
+    header,.foot{display:none;}            /* SVG carries its own title block */
+    main{max-width:100%;margin:0;padding:0;}
+    svg{border:none;border-radius:0;display:block;margin:0 auto;
+        width:auto;height:auto;max-width:200mm;max-height:260mm;
+        page-break-inside:avoid;break-inside:avoid;}
+    @page{size:letter portrait;margin:6mm;}
   }
 </style>
 </head>
@@ -39,7 +48,7 @@
 </header>
 
 <main>
-<svg viewBox="0 0 1560 2010" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Segoe UI, sans-serif">
+<svg viewBox="0 0 1560 2010" xmlns="http://www.w3.org/2000/svg" font-family="Barlow, Segoe UI, sans-serif">
   <defs>
     <marker id="ar" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto-start-reverse">
       <path d="M0,0L9,4L0,8z" fill="#b5872a"/>
@@ -52,9 +61,9 @@
   </defs>
 
   <!-- ======== streets ======== -->
-  <text x="687" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3">HANCOCK STREET (N)</text>
+  <text x="687" y="100" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3" font-family="Oswald, Arial Narrow, sans-serif">HANCOCK STREET (N)</text>
   <line x1="180" y1="112" x2="1200" y2="112" stroke="#9fb0c2" stroke-width="2" stroke-dasharray="14 8"/>
-  <text x="120" y="647" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3" transform="rotate(-90 120 647)">GREENWOOD STREET (W)</text>
+  <text x="120" y="647" text-anchor="middle" font-size="15" font-weight="700" fill="#5b718c" letter-spacing="3" font-family="Oswald, Arial Narrow, sans-serif" transform="rotate(-90 120 647)">GREENWOOD STREET (W)</text>
   <line x1="138" y1="170" x2="138" y2="1124" stroke="#9fb0c2" stroke-width="2" stroke-dasharray="14 8"/>
 
   <!-- north arrow -->
@@ -93,10 +102,10 @@
   <!-- center crest -->
   <circle cx="687" cy="647" r="58" fill="#0e2238"/>
   <circle cx="687" cy="647" r="52" fill="none" stroke="#c9a227" stroke-width="4"/>
-  <text font-size="11" font-weight="800" fill="#c9a227" letter-spacing="2">
+  <text font-size="11" font-weight="800" fill="#c9a227" letter-spacing="2" font-family="Oswald, Arial Narrow, sans-serif">
     <textPath href="#crestArc" startOffset="50%" text-anchor="middle">TEAM TOBIAS</textPath>
   </text>
-  <text x="687" y="660" text-anchor="middle" font-size="30" font-weight="800" fill="#c9a227">TT</text>
+  <text x="687" y="660" text-anchor="middle" font-size="30" font-weight="800" fill="#c9a227" font-family="Oswald, Arial Narrow, sans-serif">TT</text>
   <text x="687" y="684" text-anchor="middle" font-size="9" font-weight="700" fill="#f3e7c4" letter-spacing="1.5">SAN DIEGO</text>
 
   <!-- 94' regulation comparison (dashed) -->
@@ -177,7 +186,7 @@
     <line x1="300" y1="552" x2="471" y2="552" marker-start="url(#ar)" marker-end="url(#ar)"/>
     <line x1="1164" y1="206" x2="1326" y2="206" marker-start="url(#ar)" marker-end="url(#ar)"/>
   </g>
-  <g font-size="13" font-weight="700" fill="#b5872a">
+  <g font-size="13" font-weight="700" fill="#b5872a" font-family="Oswald, Arial Narrow, sans-serif">
     <text x="687" y="140" text-anchor="middle">106'-0" (assumed interior — verify)</text>
     <text x="176" y="647" text-anchor="middle" transform="rotate(-90 176 647)">106'-0"</text>
     <text x="687" y="936" text-anchor="middle">86'-0" COURT</text>
@@ -203,13 +212,13 @@
 
   <!-- ======== notes ======== -->
   <g font-size="12.5" fill="#1d3a5f">
-    <text x="210" y="1208" font-weight="800" font-size="14" letter-spacing="1">GENERAL NOTES</text>
+    <text x="210" y="1208" font-weight="800" font-size="14" letter-spacing="1" font-family="Oswald, Arial Narrow, sans-serif">GENERAL NOTES</text>
     <text x="210" y="1232">1. Schematic concept only — not for construction. Interior assumed 106' × 106' (≈11,236 SF); field-verify clear dimensions.</text>
     <text x="210" y="1254">2. Court 86' × 50' per Spalding short-boom Renegade plan — SD180sb portable goals, 42"×72" glass, breakaway rim (full NBA spec).</text>
     <text x="210" y="1276">3. Vendor precedent: Jimmy Butler (San Diego) and Kawhi Leonard (San Diego) private courts both run sub-regulation length —</text>
     <text x="210" y="1294">&#160;&#160;&#160;&#160;impact ≈ two strides at midcourt (per vendor text, 6/10/2026).</text>
     <text x="210" y="1316">4. Full 94' regulation (dashed) requires wall-mounted goal system; structural backup beams to be confirmed.</text>
-    <text x="210" y="1338">5. Ridge ±30' runs E–W over court centerline (directly over both rims); eave ±22'–25' at side walls — verify ≥23' over run-offs.</text>
+    <text x="210" y="1338">5. Ridge ±25' runs E–W over court centerline (directly over both rims); eave ±22' — slope puts ≈23'-6" over court sidelines vs ≥24' target; field-verify.</text>
     <text x="210" y="1360">6. Power 250A / 3-phase per flyer ("lessee to confirm") — verify for HVAC + sport lighting load.</text>
     <text x="210" y="1382">7. Restrooms SW per Voit flyer; storefront entry on Hancock; two 16' grade doors south; 11 stalls east (TPA — no parking minimum).</text>
     <text x="210" y="1404">8. Sources: Voit marketing flyer · Spalding SD180sb spec sheet · vendor correspondence 6/10/2026.</text>
@@ -222,8 +231,8 @@
     <line x1="1190" y1="1330" x2="1530" y2="1330" stroke="#1d3a5f" stroke-width="1.5"/>
     <circle cx="1228" cy="1218" r="18" fill="#0e2238"/>
     <circle cx="1228" cy="1218" r="15" fill="none" stroke="#c9a227" stroke-width="2"/>
-    <text x="1228" y="1224" text-anchor="middle" font-size="13" font-weight="800" fill="#c9a227">TT</text>
-    <text x="1258" y="1213" font-size="14" font-weight="800" fill="#1d3a5f">TEAM TOBIAS</text>
+    <text x="1228" y="1224" text-anchor="middle" font-size="13" font-weight="800" fill="#c9a227" font-family="Oswald, Arial Narrow, sans-serif">TT</text>
+    <text x="1258" y="1213" font-size="14" font-weight="800" fill="#1d3a5f" font-family="Oswald, Arial Narrow, sans-serif">TEAM TOBIAS</text>
     <text x="1258" y="1231" font-size="11" fill="#5b718c">TRAINING FACILITY</text>
     <text x="1206" y="1270" font-size="12.5" font-weight="700" fill="#1d3a5f">3235 Hancock Street</text>
     <text x="1206" y="1288" font-size="12" fill="#1d3a5f">San Diego, CA 92110</text>
@@ -237,7 +246,7 @@
   <!-- SPALDING SHORT-BOOM CLEARANCE DETAIL & FIT CHECK        -->
   <!-- ======================================================= -->
   <rect x="210" y="1450" width="1320" height="520" fill="#fff" stroke="#1d3a5f" stroke-width="2.5"/>
-  <text x="230" y="1486" font-size="15" font-weight="800" fill="#1d3a5f" letter-spacing="1">SPALDING RENEGADE SD180sb (SHORT-BOOM) — CLEARANCE DETAIL &amp; FIT CHECK</text>
+  <text x="230" y="1486" font-size="15" font-weight="800" fill="#1d3a5f" letter-spacing="1" font-family="Oswald, Arial Narrow, sans-serif">SPALDING RENEGADE SD180sb (SHORT-BOOM) — CLEARANCE DETAIL &amp; FIT CHECK</text>
   <text x="230" y="1506" font-size="11.5" fill="#5b718c">Side elevation at each baseline · per vendor correspondence 6/10/2026 + Spalding spec sheet (standard unit 158-5/16")</text>
 
   <!-- ===== side elevation (16 px = 1 ft) ===== -->
@@ -285,7 +294,7 @@
 
   <!-- ===== fit check table ===== -->
   <g font-size="13" fill="#1d3a5f">
-    <text x="870" y="1545" font-weight="800" font-size="14" letter-spacing="1">FIT CHECK — ASSUMED 106'-0" INTERIOR</text>
+    <text x="870" y="1545" font-weight="800" font-size="14" letter-spacing="1" font-family="Oswald, Arial Narrow, sans-serif">FIT CHECK — ASSUMED 106'-0" INTERIOR</text>
     <text x="870" y="1576">Court length (vendor plan)</text><text x="1500" y="1576" text-anchor="end" font-weight="700">86'-0"</text>
     <text x="870" y="1602">Goal zones required (each end)</text><text x="1500" y="1602" text-anchor="end" font-weight="700">2 × 10'-6" = 21'-0"</text>
     <line x1="870" y1="1614" x2="1500" y2="1614" stroke="#9fb0c2" stroke-width="1"/>
@@ -294,7 +303,7 @@
     <rect x="862" y="1672" width="646" height="26" fill="#fdf2dc" stroke="#c2602e" stroke-width="1.5"/>
     <text x="870" y="1690" font-weight="800" fill="#c2602e">SHORTFALL</text><text x="1500" y="1690" text-anchor="end" font-weight="800" fill="#c2602e">1'-0" (≈6" per end)</text>
 
-    <text x="870" y="1732" font-weight="800" font-size="14" letter-spacing="1">HOW IT WORKS — THREE PATHS</text>
+    <text x="870" y="1732" font-weight="800" font-size="14" letter-spacing="1" font-family="Oswald, Arial Narrow, sans-serif">HOW IT WORKS — THREE PATHS</text>
     <text x="870" y="1760" font-weight="700">A.</text><text x="894" y="1760">Run an <tspan font-weight="800">85'-0" court</tspan> (106' − 21'): fits exactly. Vendor: Butler &amp;</text>
     <text x="894" y="1778">Leonard (SD) courts already run short — cost ≈ one stride at midcourt.</text>
     <text x="870" y="1804" font-weight="700">B.</text><text x="894" y="1804"><tspan font-weight="800">Field-verify interior clear:</tspan> if true clear ≥ 107'-0", the 86' court</text>
