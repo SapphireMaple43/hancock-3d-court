@@ -109,6 +109,7 @@
 <div id="hint">drag to orbit · scroll / pinch to zoom · right-drag to pan</div>
 <div id="walkhint">🚶 WALK MODE — WASD / arrows move · mouse or drag to look · Shift run · Esc or 🚶 to exit</div>
 <div id="walkpad">
+  <button id="padX">✖</button>
   <button id="padF">▲</button>
   <button id="padB">▼</button>
 </div>
@@ -297,7 +298,7 @@ function pbr(mat, slug, rx, ry, parts=['map','nor','rough']){
 
 // ================= ground / parking =================
 const lot = new THREE.Mesh(new THREE.PlaneGeometry(480,420),
-  new THREE.MeshStandardMaterial({map:asphTex, roughness:.98}));
+  new THREE.MeshStandardMaterial({map:asphTex, color:0x7f8287, roughness:.98, envMapIntensity:.35}));
 lot.rotation.x=-Math.PI/2; lot.position.y=-0.05; lot.receiveShadow=true; scene.add(lot);
 pbr(lot.material,'asphalt_02',14,12);
 
@@ -440,8 +441,8 @@ const ctxGroup = new THREE.Group(); scene.add(ctxGroup);
     });
     g2.position.set(x,0,z); g2.rotation.y=ry; ctxGroup.add(g2);
   }
-  car(-150,72.5,0,carCols[0]); car(-98,72.5,0,carCols[2]); car(46,72.5,0,carCols[1]);
-  car(142,72.5,0,carCols[3]); car(-72.5,-44,Math.PI/2,carCols[4]); car(-72.5,-96,Math.PI/2,carCols[1]);
+  car(-150,69.6,0,carCols[0]); car(-98,69.6,0,carCols[2]); car(46,69.6,0,carCols[1]);
+  car(142,69.6,0,carCols[3]); car(-69.7,-44,Math.PI/2,carCols[4]); car(-69.7,-96,Math.PI/2,carCols[1]);
 
   // Tobias's Cybertruck in the east stalls
   function cybertruck(x,z,ry){
@@ -1083,28 +1084,60 @@ addEventListener('keydown',e=>{
   if(walkMode && ['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
 });
 addEventListener('keyup',e=>{keys[e.code]=false;});
+
+// move pad (touch): hold ▲/▼ — passive:false so iOS honors preventDefault
 [['padF',v=>padF=v],['padB',v=>padB=v]].forEach(([id,set])=>{
   const el=document.getElementById(id);
   [['touchstart',true],['touchend',false],['touchcancel',false],
    ['mousedown',true],['mouseup',false],['mouseleave',false]].forEach(([ev,v])=>{
-    el.addEventListener(ev,e=>{e.preventDefault(); set(v);});
+    el.addEventListener(ev,e=>{e.preventDefault(); set(v);},{passive:false});
   });
 });
+document.getElementById('padX').addEventListener('touchstart',
+  e=>{e.preventDefault(); if(walkMode) exitWalk();},{passive:false});
+document.getElementById('padX').addEventListener('click',
+  ()=>{ if(walkMode) exitWalk(); });
+
+// touch look: one-finger drag on the canvas = FPS head-look (no OrbitControls involved)
+let lookId=null, lastLX=0, lastLY=0, camYaw=0, camPitch=0;
+const cnv=renderer.domElement;
+cnv.addEventListener('touchstart',e=>{
+  if(!walkMode||!isTouch||lookId!==null) return;
+  const t=e.changedTouches[0];
+  lookId=t.identifier; lastLX=t.clientX; lastLY=t.clientY;
+},{passive:false});
+cnv.addEventListener('touchmove',e=>{
+  if(!walkMode||!isTouch) return;
+  for(const t of e.changedTouches){
+    if(t.identifier===lookId){
+      camYaw   -= (t.clientX-lastLX)*0.0045;
+      camPitch -= (t.clientY-lastLY)*0.0045;
+      camPitch  = Math.max(-1.25, Math.min(1.25, camPitch));
+      lastLX=t.clientX; lastLY=t.clientY;
+      camera.rotation.set(camPitch, camYaw, 0, 'YXZ');
+    }
+  }
+  e.preventDefault();
+},{passive:false});
+['touchend','touchcancel'].forEach(ev=>cnv.addEventListener(ev,e=>{
+  for(const t of e.changedTouches) if(t.identifier===lookId) lookId=null;
+}));
+
 function enterWalk(){
-  savedCam={p:camera.position.clone(), t:controls.target.clone(),
-            min:controls.minDistance, max:controls.maxDistance};
+  savedCam={p:camera.position.clone(), t:controls.target.clone()};
   animT=1;
   camera.position.set(-23,EYE,42);          // start at the storefront, facing the court
   camera.lookAt(0,EYE-0.5,0);
+  controls.enabled=false;                   // walk drives the camera on both platforms
   document.getElementById('walkhint').style.display='block';
+  document.getElementById('controls').style.display='none';
   document.getElementById('bWalk').textContent='🚶 Exit';
   if(isTouch){
-    controls.minDistance=0.05; controls.maxDistance=0.2;
-    const d=new THREE.Vector3(); camera.getWorldDirection(d);
-    controls.target.copy(camera.position).addScaledVector(d,0.15);
+    const eu=new THREE.Euler().setFromQuaternion(camera.quaternion,'YXZ');
+    camYaw=eu.y; camPitch=eu.x; lookId=null;
+    document.getElementById('walkhint').textContent='🚶 WALK — drag to look · hold ▲▼ to move · ✖ to exit';
     document.getElementById('walkpad').style.display='flex';
   }else{
-    controls.enabled=false;
     if(!plc){
       plc=new PointerLockControls(camera, renderer.domElement);
       plc.addEventListener('unlock',()=>{ if(walkMode) exitWalk(); });
@@ -1113,14 +1146,14 @@ function enterWalk(){
   }
 }
 function exitWalk(){
-  walkMode=false;
+  walkMode=false; padF=false; padB=false; lookId=null;
   document.getElementById('walkhint').style.display='none';
   document.getElementById('walkpad').style.display='none';
+  document.getElementById('controls').style.display='';
   document.getElementById('bWalk').textContent='🚶 Walk';
   if(plc && plc.isLocked) plc.unlock();
   controls.enabled=true;
   if(savedCam){
-    controls.minDistance=savedCam.min; controls.maxDistance=savedCam.max;
     camera.position.copy(savedCam.p); controls.target.copy(savedCam.t);
   }
 }
@@ -1167,10 +1200,6 @@ const clock=new THREE.Clock();
       camera.position.y=EYE;
       camera.position.x=THREE.MathUtils.clamp(camera.position.x,-220,220);
       camera.position.z=THREE.MathUtils.clamp(camera.position.z,-190,190);
-      if(isTouch){
-        const d2=new THREE.Vector3(); camera.getWorldDirection(d2);
-        controls.target.copy(camera.position).addScaledVector(d2,0.15);
-      }
     }
   } else if(animT<1 && animFrom){
     animT=Math.min(1, animT+0.022);
